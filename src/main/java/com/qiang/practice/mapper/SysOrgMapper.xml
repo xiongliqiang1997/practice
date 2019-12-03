@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysOrgMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysOrg">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_id, org_name, remark, orderby, create_date, update_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_org
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!--分页查询组合机构列表-->
+  <select id="getSysOrgByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_org
+    <where>
+      <if test="sysOrgId != null">
+        p_id=#{sysOrgId}
+      </if>
+    </where>
+    limit #{skipRows},#{pageSize}
+  </select>
+
+  <!--根据上级机构id查询组织机构，若上级机构id为null，则为查所有-->
+  <select id="getValidSysOrgByIdOrPNameOrOrgNameOrRemark" resultType="java.lang.String">
+    select
+    ifnull(group_concat(o1.id),'')
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id = o2.id
+    where o1.is_valid=1
+    <if test="id != null and id != ''">
+      and o1.id=#{id}
+    </if>
+    <if test="pName != null and pName != ''">
+      and o2.org_name like "%"#{pName}"%"
+    </if>
+    <if test="orgName != null and orgName != ''">
+      and o1.org_name like "%"#{orgName}"%"
+    </if>
+    <if test="remark != null and remark != ''">
+      and o1.remark like "%"#{remark}"%"
+    </if>
+    order by o1.orderby asc
+  </select>
+
+
+  <!--将有效字段设置为无效-->
+  <update id="updateIsValidToZeroById">
+    update sys_org
+    set is_valid = 0, invalid_date = now()
+    where id in (
+                select temp.finalId from
+                (select data.id as finalId from(
+                    select
+                        @ids as _ids,
+                        ( select @ids := group_concat(id)
+                          from sys_org
+                          where find_in_set(p_id, @ids)
+                        ) as cids,
+                        @l := @l+1 as level
+                    from sys_org,
+                    (select @ids := #{id}, @l := 0 ) b
+                    where @ids is not null
+                ) id
+                join
+                sys_org data
+                on find_in_set(data.id, id._ids) and data.is_valid=1
+                order by level, id) temp)
+  </update>
+
+
+
+
+  <!--查目前最大的排序号-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from sys_org
+    where is_valid=1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_org
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="addOneSysOrg" parameterType="com.qiang.practice.model.SysOrg">
+    insert into sys_org (id, p_id, org_name, 
+      remark, orderby, create_date, 
+      update_date, is_valid, invalid_date
+      )
+    values (#{id,jdbcType=BIGINT}, #{pId,jdbcType=BIGINT}, #{orgName,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{orderby,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, 1, #{invalidDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="addOneSysOrgSelective" parameterType="com.qiang.practice.model.SysOrg">
+    insert into sys_org
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pId != null">
+        p_id,
+      </if>
+      <if test="orgName != null">
+        org_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="orgName != null">
+        #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysOrg">
+    update sys_org
+    <set>
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="orgName != null">
+        org_name = #{orgName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysOrg">
+    update sys_org
+    set p_id = #{pId,jdbcType=BIGINT},
+      org_name = #{orgName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据上级组织机构id获取节点-->
+  <select id="getSysOrgByPId" resultMap="BaseResultMap">
+    select
+    id, org_name, remark
+    from sys_org
+    where p_id=#{pId}
+    and is_valid=1
+    order by orderby asc
+  </select>
+
+  <!--获取机构名称的数量-->
+  <select id="getOrgNameCount" resultType="java.lang.Integer">
+    select count(id)
+    from sys_org
+    where is_valid = 1
+    and org_name=#{orgName}
+    <if test="id != null and id != ''">
+      and id &lt;&gt; #{id}
+    </if>
+  </select>
+
+  <!--getValidSysOrgByPIdOrOrgNameOrRemark1-->
+  <select id="getValidSysOrgByPIdOrOrgNameOrRemark1" resultType="com.qiang.practice.model.vo.SysOrgPNameVO">
+    select
+    o1.id,
+    o1.p_id as 'pId',
+    o1.org_name as 'orgName',
+    o1.remark,
+    o1.orderby,
+    o1.create_date as 'createDate',
+    o1.update_date as 'updateDate',
+    o1.is_valid as 'isValid',
+    o1.invalid_date as 'invalidDate',
+    ifnull(o2.org_name,'无')  as 'pName'
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id = o2.id
+    where o1.is_valid=1
+    <if test="pId != null and pId != ''">
+      and o1.p_id = #{pId}
+    </if>
+    <if test="pName != null and pName != ''">
+      and o2.org_name like "%"#{pName}"%"
+    </if>
+    <if test="orgName != null and orgName != ''">
+      and o1.org_name like "%"#{orgName}"%"
+    </if>
+    <if test="remark != null and remark != ''">
+      and o1.remark like "%"#{remark}"%"
+    </if>
+    order by o1.orderby asc
+  </select>
+
+  <select id="getSysOrgPNameVOByPId" resultType="com.qiang.practice.model.vo.SysOrgPNameVO">
+    select
+    o1.id,
+    o1.p_id as 'pId',
+    o1.org_name as 'orgName',
+    o1.remark,
+    o1.orderby,
+    o1.create_date as 'createDate',
+    o1.update_date as 'updateDate',
+    o1.is_valid as 'isValid',
+    o1.invalid_date as 'invalidDate',
+    ifnull(o2.org_name,'无')  as 'pName'
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id = o2.id
+    where o1.is_valid=1
+      and o1.p_id = #{pId}
+    order by o1.orderby asc
+  </select>
+
+  <!--根据id或名字查询一条记录-->
+  <select id="getSysOrgByIdOrName" resultType="com.qiang.practice.model.vo.SysOrgPNameVO">
+    select
+    o1.id,
+    o1.p_id as 'pId',
+    o1.org_name as 'orgName',
+    o1.remark,
+    o1.orderby,
+    o1.create_date as 'createDate',
+    o1.update_date as 'updateDate',
+    o1.is_valid as 'isValid',
+    o1.invalid_date as 'invalidDate',
+    ifnull(o2.org_name,'无')  as 'pName'
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id = o2.id
+    where o1.is_valid=1
+    <if test="pId != null and pId != ''">
+      and o1.p_id = #{pId}
+    </if>
+    <if test="pName != null and pName != ''">
+      and o1.org_name like "%"#{pName}"%"
+    </if>
+  </select>
+
+  <!--根据条件查一共有多少条数据-->
+  <select id="getTotalByPageWithCondition" resultType="java.lang.Integer">
+    select
+    count(id)
+    from sys_org
+    where is_valid=1
+    <if test="pId != null and pId != ''">
+      and p_id = #{pId}
+    </if>
+    <if test="pName != null and pName != ''">
+      and org_name like "%"#{pName}"%"
+    </if>
+  </select>
+
+  <!--根据条件分页查询对应的组织机构-->
+  <select id="getListByPage" resultType="java.util.Map">
+    select
+      o1.id,
+      o1.p_id as 'pId',
+      o1.org_name as 'orgName',
+      o1.remark,
+      o1.orderby,
+      o1.create_date as 'createDate',
+      o1.update_date as 'updateDate',
+      o1.is_valid as 'isValid',
+      o1.invalid_date as 'invalidDate',
+      ifnull(o2.org_name,'无')  as 'pName'
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id = o2.id
+    where o1.is_valid=1
+    <if test="id != null and id != ''">
+      and o1.id in (
+                select data.id from(
+                    select
+                        @ids as _ids,
+                        ( select @ids := group_concat(id)
+                          from sys_org
+                          where find_in_set(p_id, @ids)
+                        ) as cids,
+                        @l := @l+1 as level
+                    from sys_org,
+                    (select @ids := #{id}, @l := 0 ) b
+                    where @ids is not null
+                ) id
+                join
+                sys_org data
+                on find_in_set(data.id, id._ids) and data.is_valid=1
+                order by level, id)
+    </if>
+    <if test="pName != null and pName != ''">
+      and o2.org_name like "%"#{pName}"%"
+    </if>
+    <if test="orgName != null and orgName != ''">
+      and o1.org_name like "%"#{orgName}"%"
+    </if>
+    <if test="remark != null and remark != ''">
+      and o1.remark like "%"#{remark}"%"
+    </if>
+    order by o1.orderby asc
+  </select>
+
+  <!--根据id查询其下第一层子机构-->
+  <select id="getFirstSonOrgByPId" resultType="java.util.Map">
+    select id, org_name as 'orgName', orderby
+    from sys_org
+    where is_valid=1
+    and p_id = #{id}
+    order by orderby asc
+  </select>
+
+  <!--根据id修改orderby字段-->
+  <update id="sort" parameterType="java.util.Map">
+    update sys_org
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+
+  <!--根据id查单个组织机构的详细信息-->
+  <select id="getById" resultMap="BaseResultMap">
+    select
+      o1.id,
+      o1.org_name,
+      o1.p_id,
+      ifnull(o2.org_name, '无') as 'p_name',
+      o1.remark
+    from sys_org o1
+    left join sys_org o2
+    on o1.p_id=o2.id
+    where o1.is_valid=1
+    and o1.id = #{id}
+  </select>
+
+</mapper>

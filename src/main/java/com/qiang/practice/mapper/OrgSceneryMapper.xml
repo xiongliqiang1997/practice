@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.OrgSceneryMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.OrgScenery">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, title, img_path, orderby, create_date, update_date, is_valid, invalid_date
+  </sql>
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from org_scenery
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from org_scenery
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="add" parameterType="com.qiang.practice.model.OrgScenery">
+    insert into org_scenery (id, sys_user, title, 
+      img_path, orderby, create_date, 
+      update_date, is_valid, invalid_date
+      )
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{imgPath,jdbcType=VARCHAR}, #{orderby,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, 1, #{invalidDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.OrgScenery">
+    insert into org_scenery
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="imgPath != null">
+        img_path,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null">
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.OrgScenery">
+    update org_scenery
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.OrgScenery">
+    update org_scenery
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--将当前最大的排序号查出来-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from org_scenery
+    where is_valid = 1
+  </select>
+
+  <!--根据list里的id，将这些企业风光的有效字段设置为0，即无效-->
+  <update id="updateValidToZeroByIdList" parameterType="java.util.List">
+    update org_scenery
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach collection="idList" item="id" index="" separator="," open="(" close=")">
+      #{id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--根据条件分页查询-->
+  <select id="getListByCondition" resultType="java.util.Map">
+    select
+        id,title, img_path as 'imgPath'
+    from org_scenery
+    where is_valid = 1
+    <if test="title != null and title != ''">
+        and title like "%"#{title}"%"
+    </if>
+    order by orderby asc
+  </select>
+
+  <!--获取需要排序的企业风光数据-->
+  <select id="getSortData" resultType="java.util.Map">
+    select id, title, orderby
+    from org_scenery
+    where is_valid=1
+    order by orderby asc
+  </select>
+
+  <!--根据id修改orderby字段-->
+  <update id="sort" parameterType="java.util.Map">
+    update org_scenery
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+</mapper>

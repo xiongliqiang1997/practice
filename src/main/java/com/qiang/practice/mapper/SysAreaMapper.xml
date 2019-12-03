@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysAreaMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysArea">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="p_id" jdbcType="INTEGER" property="pId" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="area_type" jdbcType="TINYINT" property="areaType" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_id, area_name, area_type, create_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_area
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_area
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.SysArea">
+    insert into sys_area (id, p_id, area_name, 
+      area_type, create_date, is_valid, 
+      invalid_date)
+    values (#{id,jdbcType=INTEGER}, #{pId,jdbcType=INTEGER}, #{areaName,jdbcType=VARCHAR},
+      #{areaType,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, 
+      #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.SysArea">
+    insert into sys_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pId != null">
+        p_id,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="areaType != null">
+        area_type,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaType != null">
+        #{areaType,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysArea">
+    update sys_area
+    <set>
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=INTEGER},
+      </if>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="areaType != null">
+        area_type = #{areaType,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysArea">
+    update sys_area
+    set p_id = #{pId,jdbcType=INTEGER},
+      area_name = #{areaName,jdbcType=VARCHAR},
+      area_type = #{areaType,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--根据上级地区id获取地区列表-->
+  <select id="getByPId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from sys_area
+    where p_id=
+    <choose>
+      <when test="pId != null and pId != ''">
+        #{pId}
+      </when>
+      <otherwise>
+        0
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--根据上级地区id获取地区列表(为获取收货地址详情使用的)-->
+  <select id="getByPIdForUserAddressDetail" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from sys_area
+    where p_id=#{value}
+  </select>
+</mapper>

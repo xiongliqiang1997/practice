@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysUserMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_sex" jdbcType="TINYINT" property="userSex" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="is_customer_service" jdbcType="TINYINT" property="isCustomerService" />
+    <result column="have_authority" jdbcType="TINYINT" property="haveAuthority" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+
+  <resultMap id="BaseResultAndOrgMap" type="com.qiang.practice.model.vo.SysUserAndOrgVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="org_id" jdbcType="BIGINT" property="orgId" />
+    <result column="org_name" jdbcType="VARCHAR" property="orgName" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="user_sex" jdbcType="TINYINT" property="userSex" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="is_customer_service" jdbcType="TINYINT" property="isCustomerService" />
+    <result column="have_authority" jdbcType="TINYINT" property="haveAuthority" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, org_id, user_name, user_sex, login_name, login_pwd, phone, img_path, have_authority, orderby,
+    create_date, update_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="removeById" parameterType="java.lang.Long">
+    delete from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="addOneSysOrg" parameterType="com.qiang.practice.model.SysUser" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_user (id, org_id, user_name, 
+      user_sex, login_name, login_pwd, 
+      phone, img_path, is_customer_service, have_authority, orderby,
+      create_date, update_date, is_valid, invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{orgId,jdbcType=BIGINT}, #{userName,jdbcType=VARCHAR}, 
+      #{userSex,jdbcType=TINYINT}, #{loginName,jdbcType=VARCHAR}, #{loginPwd,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{imgPath,jdbcType=VARCHAR}, #{isCustomerService,jdbcType=TINYINT},
+      #{haveAuthority,jdbcType=TINYINT}, #{orderby,jdbcType=INTEGER},
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 1,
+      #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.SysUser">
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orgId != null">
+        org_id,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="userSex != null">
+        user_sex,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="loginPwd != null">
+        login_pwd,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="haveAuthority != null">
+        have_authority,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orgId != null">
+        #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null">
+        #{userSex,jdbcType=TINYINT},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null">
+        #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="haveAuthority != null">
+        #{haveAuthority,jdbcType=TINYINT},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysUser">
+    update sys_user
+    <set>
+      <if test="orgId != null">
+        org_id = #{orgId,jdbcType=BIGINT},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="userSex != null">
+        user_sex = #{userSex,jdbcType=TINYINT},
+      </if>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="loginPwd != null and loginPwd != ''">
+        login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      </if>
+      phone = #{phone,jdbcType=VARCHAR},
+      <if test="isCustomerService != null">
+        is_customer_service = #{isCustomerService,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="haveAuthority != null">
+        have_authority = #{haveAuthority,jdbcType=TINYINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysUser">
+    update sys_user
+    set org_id = #{orgId,jdbcType=BIGINT},
+      user_name = #{userName,jdbcType=VARCHAR},
+      user_sex = #{userSex,jdbcType=TINYINT},
+      login_name = #{loginName,jdbcType=VARCHAR},
+      login_pwd = #{loginPwd,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      have_authority = #{haveAuthority,jdbcType=TINYINT},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--哪些条件不为null就根据哪些条件查，全为null则查所有-->
+  <select id="getValidSysUserByCondition" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from sys_user
+    where is_valid=1
+    <if test="sysOrgId != null and sysOrgId != ''">
+      and org_Id=#{sysOrgId}
+    </if>
+    <if test="userName != null and userName != ''">
+      and user_name like "%"#{userName}"%"
+    </if>
+    <if test="userSex != null and userSex != ''">
+      and user_sex=#{userSex}
+    </if>
+    <if test="loginName != null and loginName != ''">
+      and login_name like "%"#{loginName}"%"
+    </if>
+    <if test="haveAuthority != null and haveAuthority != ''">
+      and have_authority=#{haveAuthority}
+    </if>
+    order by orderby asc
+  </select>
+
+  <!--将当前目前的最大排序号查出来-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from sys_user
+    where is_valid=1
+  </select>
+
+  <!--批量删除用户（将有效字段设置为0  :代表无效）-->
+  <update id="updateIsValidToZeroByIdList" parameterType="java.util.List">
+    update sys_user
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <select id="getById" resultMap="BaseResultAndOrgMap">
+    select
+        u.id,
+        u.org_id,
+        u.user_name,
+        u.user_sex,
+        u.login_name,
+        u.phone,
+        u.have_authority,
+        o.org_name,
+        u.img_path,
+        u.is_customer_service
+    from sys_user u
+    left join sys_org o
+    on u.org_id = o.id
+    where u.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!--根据条件分页查询对应的用户-->
+  <select id="getByPage" resultType="java.util.Map">
+    select
+      u.id,
+      u.org_id as 'orgId',
+      u.user_name as 'userName',
+      u.user_sex as 'userSex',
+      u.login_name as loginName,
+      u.have_authority as 'haveAuthority',
+      o.org_name as 'orgName',
+      u.is_customer_service as isCustomerService
+    from sys_user u
+    left join sys_org o
+    on u.org_id=o.id
+    where u.is_valid=1 and o.is_valid=1
+    <if test="userName != null and userName != ''">
+      and u.user_name like "%"#{userName}"%"
+    </if>
+    <if test="userSex != null and userSex != ''">
+      and u.user_sex = #{userSex}
+    </if>
+    <if test="loginName != null and loginName != ''">
+      and u.login_name like "%"#{loginName}"%"
+    </if>
+    <if test="orgName != null and orgName != ''">
+      and o.org_name like "%"#{orgName}"%"
+    </if>
+    <if test="haveAuthority != null and haveAuthority != ''">
+      and u.have_authority = #{haveAuthority}
+    </if>
+    <if test="orgId != null and orgId != ''">
+      and u.org_id in (
+                    SELECT DATA.id FROM(
+                    SELECT
+                    @ids as _ids,
+                    ( SELECT @ids := GROUP_CONCAT(id)
+                    FROM sys_org
+                    WHERE FIND_IN_SET(p_id, @ids)
+                    ) as cids,
+                    @l := @l+1 as level
+                    FROM sys_org,
+                    (SELECT @ids :=#{orgId}, @l := 0 ) b
+                    WHERE @ids IS NOT NULL
+                    ) id, sys_org DATA
+                    WHERE FIND_IN_SET(DATA.id, ID._ids) and DATA.is_valid=1
+                    ORDER BY level, id)
+    </if>
+    order by u.orderby asc
+
+  </select>
+
+  <!--根据组织机构id查询该机构所有直属员工，若id为空，则全查-->
+  <select id="getFirstSonUserByOrgId" resultType="java.util.Map">
+    select id, user_name as 'userName', orderby
+    from sys_user
+    where is_valid=1
+    <if test="orgId != null and orgId != ''">
+      and org_id = #{orgId}
+    </if>
+    order by orderby asc
+  </select>
+
+  <!--保存排序数据-->
+  <update id="sort" parameterType="java.util.Map">
+    update sys_user
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+
+  <!--根据机构id将每个机构下的员工都删除-->
+  <update id="updateIsValidToZeroByOrgId" parameterType="java.lang.Long">
+    update sys_user
+    set is_valid = 0, invalid_date = now()
+    where org_id in (
+                select data.id from(
+                select
+                @ids as _ids,
+                ( select @ids := group_concat(id)
+                from sys_org
+                where find_in_set(p_id, @ids)
+                ) as cids,
+                @l := @l+1 as level
+                from sys_org,
+                (select @ids := #{orgId}, @l := 0 ) b
+                where @ids is not null
+                ) id
+                join
+                sys_org data
+                on find_in_set(data.id, id._ids)
+                order by level, id)
+  </update>
+
+  <!--获取该登录名的数量-->
+  <select id="getLoginNameCount" resultType="java.lang.Integer">
+    select count(id)
+    from sys_user
+    where is_valid=1
+    and login_name = #{loginName}
+    <if test="id != null and id != ''">
+      and id &lt;&gt; #{id}
+    </if>
+  </select>
+
+  <!--根据用户名和密码查询该用户信息-->
+  <select id="getByLoginNameAndLoginPwd" resultMap="BaseResultMap">
+    select
+      id,
+      org_id,
+      user_name,
+      user_sex,
+      login_name,
+      phone,
+      have_authority,
+      img_path
+    from sys_user
+    where is_valid=1
+    and login_name = #{loginName,jdbcType=VARCHAR}
+    and login_pwd = #{loginPwd,jdbcType=VARCHAR}
+  </select>
+
+  <!--获取客服id-->
+  <select id="getCustomerServiceIdList" resultType="java.lang.Long">
+    select id
+    from sys_user
+    where is_customer_service=1
+    and is_valid=1
+  </select>
+
+  <!--获取用户的通讯录-->
+  <select id="getMailList" resultMap="BaseResultMap">
+    select
+      u.id,
+      u.user_name,
+      u.img_path,
+      sus.status
+    from sys_user u
+    join sys_user_status sus
+    on u.id=sus.sys_user
+    where u.is_valid=1
+    and u.id &lt;&gt; #{sysUserId}
+    order by u.orderby asc
+  </select>
+
+  <!--验证旧密码是否正确-->
+  <select id="checkOldPassword" resultType="java.lang.Boolean">
+    select count(id)
+    from sys_user
+    where id=#{id}
+    and login_pwd=#{oldLoginPwd}
+  </select>
+
+  <!--修改密码-->
+  <update id="updatePassword">
+    update sys_user
+    set login_pwd=#{newLoginPwd}
+    where id=#{id}
+  </update>
+
+</mapper>

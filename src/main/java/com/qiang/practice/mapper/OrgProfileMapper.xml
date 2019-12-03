@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.OrgProfileMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.OrgProfile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="revision_date" jdbcType="TIMESTAMP" property="revisionDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.OrgProfile">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, revision_date
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from org_profile
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from org_profile
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="add" parameterType="com.qiang.practice.model.OrgProfile">
+    insert into org_profile (id, sys_user, revision_date, 
+      content)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{revisionDate,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.OrgProfile">
+    insert into org_profile
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="revisionDate != null">
+        revision_date,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="revisionDate != null">
+        #{revisionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.OrgProfile">
+    update org_profile
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="revisionDate != null">
+        revision_date = #{revisionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.OrgProfile">
+    update org_profile
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      revision_date = #{revisionDate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.OrgProfile">
+    update org_profile
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      revision_date = #{revisionDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--获得目前的企业简介-->
+  <select id="getNow" resultMap="BaseResultMap">
+    select
+      id, sys_user, revision_date, content
+    from org_profile
+    order by revision_date desc
+    limit 0,1
+  </select>
+</mapper>

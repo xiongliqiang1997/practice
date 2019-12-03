@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.UserAddressMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.UserAddress">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="province" jdbcType="INTEGER" property="province" />
+    <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="area" jdbcType="INTEGER" property="area" />
+    <result column="street" jdbcType="VARCHAR" property="street" />
+    <result column="is_default_address" jdbcType="TINYINT" property="isDefaultAddress" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+
+  <resultMap id="BaseResultAreaMap" type="com.qiang.practice.model.vo.UserAddressAreaVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="province" jdbcType="INTEGER" property="province" />
+    <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="area" jdbcType="INTEGER" property="area" />
+    <result column="street" jdbcType="VARCHAR" property="street" />
+    <result column="is_default_address" jdbcType="TINYINT" property="isDefaultAddress" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+    <association property="provinceObj" javaType="com.qiang.practice.model.SysArea"
+                 column="province" select="com.qiang.practice.mapper.SysAreaMapper.selectByPrimaryKey"/>
+    <association property="cityObj" javaType="com.qiang.practice.model.SysArea"
+                 column="city" select="com.qiang.practice.mapper.SysAreaMapper.selectByPrimaryKey"/>
+    <association property="areaObj" javaType="com.qiang.practice.model.SysArea"
+                 column="area" select="com.qiang.practice.mapper.SysAreaMapper.selectByPrimaryKey"/>
+  </resultMap>
+
+  <resultMap id="BaseResultAreaListMap" type="com.qiang.practice.model.vo.UserAddressAreaVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="province" jdbcType="INTEGER" property="province" />
+    <result column="city" jdbcType="INTEGER" property="city" />
+    <result column="area" jdbcType="INTEGER" property="area" />
+    <result column="street" jdbcType="VARCHAR" property="street" />
+    <result column="is_default_address" jdbcType="TINYINT" property="isDefaultAddress" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+    <collection property="checkedCityList" ofType="com.qiang.practice.model.SysArea"
+                column="province" select="com.qiang.practice.mapper.SysAreaMapper.getByPIdForUserAddressDetail"/>
+    <collection property="checkedAreaList" ofType="com.qiang.practice.model.SysArea"
+                column="city" select="com.qiang.practice.mapper.SysAreaMapper.getByPIdForUserAddressDetail"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, sys_user, consignee_name, consignee_phone, province, city, area, street,
+    is_default_address, create_date, update_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_address
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_address
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.UserAddress">
+    insert into user_address (id, sys_user, consignee_name, 
+      consignee_phone, province,
+      city, area, street, is_default_address, 
+      create_date, update_date, is_valid, 
+      invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{consigneeName,jdbcType=VARCHAR}, 
+      #{consigneePhone,jdbcType=VARCHAR}, #{province,jdbcType=INTEGER},
+      #{city,jdbcType=INTEGER}, #{area,jdbcType=INTEGER}, #{street,jdbcType=VARCHAR}, #{isDefaultAddress,jdbcType=TINYINT},
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, 
+      #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.UserAddress">
+    insert into user_address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="consigneeName != null">
+        consignee_name,
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="street != null">
+        street,
+      </if>
+      <if test="isDefaultAddress != null">
+        is_default_address,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="consigneeName != null">
+        #{consigneeName,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneePhone != null">
+        #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=INTEGER},
+      </if>
+      <if test="street != null">
+        #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefaultAddress != null">
+        #{isDefaultAddress,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.UserAddress">
+    update user_address
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="consigneeName != null">
+        consignee_name = #{consigneeName,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=INTEGER},
+      </if>
+      <if test="street != null">
+        street = #{street,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefaultAddress != null">
+        is_default_address = #{isDefaultAddress,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.UserAddress">
+    update user_address
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      consignee_name = #{consigneeName,jdbcType=VARCHAR},
+      consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      province = #{province,jdbcType=INTEGER},
+      city = #{city,jdbcType=INTEGER},
+      area = #{area,jdbcType=INTEGER},
+      street = #{street,jdbcType=VARCHAR},
+      is_default_address = #{isDefaultAddress,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--
+    获取收货地址列表
+    若isDefaultAddress为true，则只查默认收货地址
+  -->
+  <select id="getListBySysUser" resultMap="BaseResultAreaMap">
+    select
+      id,
+      consignee_name,
+      consignee_phone,
+      province,
+      city,
+      area,
+      street,
+      is_default_address
+    from user_address
+    where is_valid=1
+    and sys_user=#{sysUser}
+    <choose>
+      <when test="isDefaultAddress">
+        and is_default_address = 1
+      </when>
+      <otherwise>
+        order by is_default_address desc,create_date desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--根据id将isDefaultAddress字段从originValue修改为newValue-->
+  <update id="updateIsDefaultBySysUser">
+    update user_address
+    set is_default_address=#{newValue}
+    where sys_user=#{sysUser}
+    and is_valid=1
+    and is_default_address=#{originValue}
+  </update>
+
+  <!--根据id数组，将is_valid字段置为newValue-->
+  <update id="updateIsValidByIdList">
+    update user_address
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--获取收货地址详情-->
+  <select id="getById" parameterType="java.lang.Long" resultMap="BaseResultAreaMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from user_address
+    where id=#{id} and sys_user=#{sysUserId}
+  </select>
+
+  <!--checkedProvinceList-->
+  <select id="getByIdIncludeAreaList" parameterType="java.lang.Long" resultMap="BaseResultAreaListMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from user_address
+    where id=#{id}
+  </select>
+</mapper>

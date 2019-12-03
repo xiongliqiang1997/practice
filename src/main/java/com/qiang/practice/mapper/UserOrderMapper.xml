@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.UserOrderMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.UserOrder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="CHAR" property="code" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="amount_total" jdbcType="DECIMAL" property="amountTotal" />
+    <result column="address_id" jdbcType="BIGINT" property="addressId" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_no" jdbcType="CHAR" property="payNo" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+
+  <resultMap id="BaseResultOrderProductMap" type="com.qiang.practice.model.vo.UserOrderAndOrderProductVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="CHAR" property="code" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="amount_total" jdbcType="DECIMAL" property="amountTotal" />
+    <result column="address_id" jdbcType="BIGINT" property="addressId" />
+    <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+    <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
+    <result column="pay_channel" jdbcType="VARCHAR" property="payChannel" />
+    <result column="pay_no" jdbcType="CHAR" property="payNo" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="code" jdbcType="CHAR" property="code" />
+    <collection property="userOrderProductLogisticsVOList" ofType="com.qiang.practice.model.UserOrderProduct"
+                column="id" select="com.qiang.practice.mapper.UserOrderProductMapper.selectListByUserOrderId"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, sys_user, status, amount_total, address_id, consignee_name, consignee_phone, consignee_address, pay_channel,
+    pay_no, create_date, pay_time, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_order
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_order
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.UserOrder" useGeneratedKeys="true" keyProperty="id">
+    insert into user_order (id, code, sys_user, 
+      status, amount_total, address_id,
+      consignee_name, consignee_phone, consignee_address,
+      pay_channel, pay_no,
+      create_date, pay_time,
+      is_valid, invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=CHAR}, #{sysUser,jdbcType=BIGINT}, 
+      #{status,jdbcType=TINYINT}, #{amountTotal,jdbcType=DECIMAL}, #{addressId,jdbcType=BIGINT},
+      #{consigneeName,jdbcType=VARCHAR}, #{consigneePhone,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR},
+      #{payChannel,jdbcType=VARCHAR}, #{payNo,jdbcType=CHAR},
+      #{createDate,jdbcType=TIMESTAMP}, #{payTime,jdbcType=TIMESTAMP},
+      #{isValid,jdbcType=TINYINT}, #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.UserOrder">
+    insert into user_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="amountTotal != null">
+        amount_total,
+      </if>
+      <if test="addressId != null">
+        address_id,
+      </if>
+      <if test="consigneeName != null">
+        consignee_name,
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone,
+      </if>
+      <if test="consigneeAddress != null">
+        consignee_address,
+      </if>
+      <if test="payChannel != null">
+        pay_channel,
+      </if>
+      <if test="payNo != null">
+        pay_no,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="payTime != null">
+        pay_time,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=CHAR},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="amountTotal != null">
+        #{amountTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="addressId != null">
+        #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="consigneeName != null">
+        #{consigneeName,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneePhone != null">
+        #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeAddress != null">
+        #{consigneeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="payChannel != null">
+        #{payChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="payNo != null">
+        #{payNo,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payTime != null">
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.UserOrder">
+    update user_order
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=CHAR},
+      </if>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="amountTotal != null">
+        amount_total = #{amountTotal,jdbcType=DECIMAL},
+      </if>
+      <if test="addressId != null">
+        address_id = #{addressId,jdbcType=BIGINT},
+      </if>
+      <if test="consigneeName != null">
+        consignee_name = #{consigneeName,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneePhone != null">
+        consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeAddress != null">
+        consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="payChannel != null">
+        pay_channel = #{payChannel,jdbcType=VARCHAR},
+      </if>
+      <if test="payNo != null">
+        pay_no = #{payNo,jdbcType=CHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="payTime != null">
+        pay_time = #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.UserOrder">
+    update user_order
+    set code = #{code,jdbcType=CHAR},
+      sys_user = #{sysUser,jdbcType=BIGINT},
+      status = #{status,jdbcType=TINYINT},
+      amount_total = #{amountTotal,jdbcType=DECIMAL},
+      address_id = #{addressId,jdbcType=BIGINT},
+      consignee_name = #{consigneeName,jdbcType=VARCHAR},
+      consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+      pay_channel = #{payChannel,jdbcType=VARCHAR},
+      pay_no = #{payNo,jdbcType=CHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      pay_time = #{payTime,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件分页查询用户订单列表-->
+  <select id="getListByPageAndCondition" resultMap="BaseResultOrderProductMap">
+    select
+    max(uo.id) as id,
+    max(uo.status) as status,
+    max(uo.amount_total) as amount_total,
+    max(uo.create_date) as create_date,
+    max(uo.code) as code,
+    max(uo.consignee_name) as consignee_name
+    from user_order uo
+    join user_order_product uop
+    on uo.id=uop.user_order_id and uo.is_valid=1
+    where uo.sys_user=#{sysUser}
+    <if test="productName != null and productName != ''">
+      and uop.product_name like "%"#{productName}"%"
+    </if>
+    <if test="code != null and code != ''">
+      and uo.code like "%"#{code}"%"
+    </if>
+    <if test="minAmountTotal != null and minAmountTotal != ''">
+      and uo.amount_total &gt;= #{minAmountTotal}
+    </if>
+    <if test="maxAmountTotal != null and maxAmountTotal != ''">
+      and uo.amount_total &lt;= #{maxAmountTotal}
+    </if>
+    <if test="status != null and status != ''">
+      and uo.status = #{status}
+    </if>
+    group by uo.id
+    <choose>
+      <when test="amountTotal != null and amountTotal != ''">
+        order by uo.amount_total ${amountTotal}
+      </when>
+      <otherwise>
+        order by uo.create_date desc
+      </otherwise>
+    </choose>
+  </select>
+
+    <!--根据id字符串将订单有效字段置为newValue-->
+  <update id="updateIsValid">
+    update user_order
+    set is_valid=#{newValue}, invalid_date=now()
+    where find_in_set(id, #{idListStr})
+  </update>
+
+    <!--获取订单详情-->
+  <select id="getById" resultMap="BaseResultOrderProductMap">
+    select
+      id,
+      code,
+      status,
+      amount_total,
+      address_id,
+      consignee_name,
+      consignee_phone,
+      consignee_address,
+      pay_channel,
+      pay_no,
+      create_date,
+      pay_time
+    from user_order
+    where id=#{id}
+  </select>
+
+  <!--通过订单id、订单编号、订单创建人id完成付款-->
+  <update id="pay">
+    update user_order
+    set status=#{payedStatus}, pay_no=#{payNo}, pay_time=now()
+    where id=#{id}
+    and sys_user=#{sysUser} and code=#{code} and is_valid=1 and status=#{notPayStatus}
+  </update>
+
+  <!--获取所有的订单-->
+  <select id="getAll" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"></include>
+    from user_order
+    where is_valid=1
+  </select>
+
+  <!--将订单状态置为已发货-->
+  <update id="sendProduct">
+    update user_order
+    set status=#{status}
+    where id=#{id} and is_valid=1
+  </update>
+
+  <!--根据id修改订单总金额-->
+  <update id="updateAmountTotal">
+    update user_order
+    set amount_total=#{amountTotal}
+    where id=#{id}
+    and is_valid=1
+    and code = #{code}
+  </update>
+</mapper>

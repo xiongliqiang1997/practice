@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.PrimaryMemberMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.PrimaryMember">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="work_date" jdbcType="TIMESTAMP" property="workDate" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="politic_countenance" jdbcType="VARCHAR" property="politicCountenance" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.PrimaryMember">
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, name, birthday, work_date, nation, politic_countenance, title, orderby, 
+    create_date, update_date, is_valid, invalid_date, img_path
+  </sql>
+  <sql id="Blob_Column_List">
+    remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from primary_member
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from primary_member
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.PrimaryMember">
+    insert into primary_member (id, sys_user, name, 
+      birthday, work_date, nation, 
+      politic_countenance, title, orderby, 
+      create_date, update_date, is_valid, 
+      invalid_date, remark, img_path)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{birthday,jdbcType=TIMESTAMP}, #{workDate,jdbcType=TIMESTAMP}, #{nation,jdbcType=VARCHAR}, 
+      #{politicCountenance,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{orderby,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 1,
+      #{invalidDate,jdbcType=TIMESTAMP}, #{remark,jdbcType=LONGVARCHAR}, #{imgPath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.PrimaryMember">
+    insert into primary_member
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="birthday != null">
+        birthday,
+      </if>
+      <if test="workDate != null">
+        work_date,
+      </if>
+      <if test="nation != null">
+        nation,
+      </if>
+      <if test="politicCountenance != null">
+        politic_countenance,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="workDate != null">
+        #{workDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nation != null">
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="politicCountenance != null">
+        #{politicCountenance,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.PrimaryMember">
+    update primary_member
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="birthday != null">
+        birthday = #{birthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="workDate != null">
+        work_date = #{workDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="nation != null">
+        nation = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="politicCountenance != null">
+        politic_countenance = #{politicCountenance,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.PrimaryMember">
+    update primary_member
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      work_date = #{workDate,jdbcType=TIMESTAMP},
+      nation = #{nation,jdbcType=VARCHAR},
+      politic_countenance = #{politicCountenance,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.PrimaryMember">
+    update primary_member
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      birthday = #{birthday,jdbcType=TIMESTAMP},
+      work_date = #{workDate,jdbcType=TIMESTAMP},
+      nation = #{nation,jdbcType=VARCHAR},
+      politic_countenance = #{politicCountenance,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--查询，若各查询条件不为null，则为动态条件查询-->
+  <select id="getByCondition" resultType="java.util.Map">
+    select
+      id,
+      name,
+      SUBSTRING(birthday, 1, 10) as 'birthday',
+      SUBSTRING(work_date, 1, 10) as 'workDate',
+      nation,
+      politic_countenance as 'politicCountenance',
+      title,
+      ifnull(remark,'') as 'remark',
+      img_path as 'imgPath'
+    from primary_member
+    where is_valid=1
+    <if test="name != null and name != ''">
+      and name like "%"#{name}"%"
+    </if>
+    <if test="nation != null and nation != ''">
+      and nation like "%"#{nation}"%"
+    </if>
+    <if test="politicCountenance != null and politicCountenance != ''">
+      and politic_countenance like "%"#{politicCountenance}"%"
+    </if>
+    <if test="title != null and title != ''">
+      and title like "%"#{title}"%"
+    </if>
+    <if test="birthday != null and birthday != ''">
+      and DATEDIFF(birthday,#{birthday})=0
+    </if>
+    <if test="workDate != null and workDate != ''">
+      and DATEDIFF(work_date,#{workDate})=0
+    </if>
+    order by orderby asc
+  </select>
+
+  <!--查目前的最大排序号-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from primary_member
+    where is_valid=1
+  </select>
+
+  <!--批量删除主要成员,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList" parameterType="java.util.List">
+    update primary_member
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--获取需要排序的主要成员数据-->
+  <select id="getSortData" resultType="java.util.Map">
+    select id, name, title, orderby
+    from primary_member
+    where is_valid=1
+    order by orderby asc
+  </select>
+
+  <!--根据id修改orderby字段-->
+  <update id="sort" parameterType="java.util.Map">
+    update primary_member
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+</mapper>

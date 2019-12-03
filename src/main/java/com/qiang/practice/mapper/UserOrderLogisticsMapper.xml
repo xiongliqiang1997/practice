@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.UserOrderLogisticsMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.UserOrderLogistics">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_order_product_id" jdbcType="BIGINT" property="userOrderProductId" />
+    <result column="code" jdbcType="CHAR" property="code" />
+    <result column="logistics_type" jdbcType="VARCHAR" property="logisticsType" />
+    <result column="fee" jdbcType="DECIMAL" property="fee" />
+    <result column="real_pay" jdbcType="DECIMAL" property="realPay" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_order_product_id, code, logistics_type,
+    fee, real_pay, status, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_order_logistics
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_order_logistics
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.UserOrderLogistics">
+    insert into user_order_logistics (id, user_order_product_id, code,
+      logistics_type, fee, real_pay, 
+      status, create_date)
+    values (#{id,jdbcType=BIGINT}, #{userOrderProductId,jdbcType=BIGINT}, #{code,jdbcType=CHAR},
+      #{logisticsType,jdbcType=VARCHAR}, #{fee,jdbcType=DECIMAL}, #{realPay,jdbcType=DECIMAL}, 
+      #{status,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.UserOrderLogistics">
+    insert into user_order_logistics
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userOrderProductId != null">
+        user_order_product_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="logisticsType != null">
+        logistics_type,
+      </if>
+      <if test="fee != null">
+        fee,
+      </if>
+      <if test="realPay != null">
+        real_pay,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userOrderProductId != null">
+        #{userOrderProductId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=CHAR},
+      </if>
+      <if test="logisticsType != null">
+        #{logisticsType,jdbcType=VARCHAR},
+      </if>
+      <if test="fee != null">
+        #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="realPay != null">
+        #{realPay,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.UserOrderLogistics">
+    update user_order_logistics
+    <set>
+      <if test="userOrderProductId != null">
+        user_order_product_id = #{userOrderProductId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=CHAR},
+      </if>
+      <if test="logisticsType != null">
+        logistics_type = #{logisticsType,jdbcType=VARCHAR},
+      </if>
+      <if test="fee != null">
+        fee = #{fee,jdbcType=DECIMAL},
+      </if>
+      <if test="realPay != null">
+        real_pay = #{realPay,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.UserOrderLogistics">
+    update user_order_logistics
+    set user_order_product_id = #{userOrderProductId,jdbcType=BIGINT},
+      code = #{code,jdbcType=CHAR},
+      logistics_type = #{logisticsType,jdbcType=VARCHAR},
+      fee = #{fee,jdbcType=DECIMAL},
+      real_pay = #{realPay,jdbcType=DECIMAL},
+      status = #{status,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--批量生成物流信息-->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into user_order_logistics
+    (user_order_product_id, code, logistics_type, fee, real_pay, status, create_date)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.userOrderProductId}, #{item.code}, #{item.logisticsType}, #{item.fee}, #{item.realPay}, #{item.status}, now())
+    </foreach>
+  </insert>
+
+  <!--根据userOrderProductId数组字符串将物流状态置为已签收-->
+  <update id="updateStatusByUserOrderProductIdListStr">
+    update user_order_logistics
+    set status=#{logisticsHasSignedStatus}
+    where find_in_set(user_order_product_id, #{userOrderProductIdListStr})>0
+  </update>
+</mapper>

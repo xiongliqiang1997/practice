@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.UserOrderProductMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.UserOrderProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_order_id" jdbcType="BIGINT" property="userOrderId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <resultMap id="BaseResultLogisticsMap" type="com.qiang.practice.model.vo.UserOrderProductLogisticsVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_order_id" jdbcType="BIGINT" property="userOrderId" />
+    <result column="logistics_status" jdbcType="TINYINT" property="logisticsStatus" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, user_order_id, product_id, first_product_img_path, product_name, product_price, num, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_order_product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_order_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.UserOrderProduct">
+    insert into user_order_product (id, user_order_id, product_id, first_product_img_path,
+      product_name, product_price,
+      num, remark)
+    values (#{id,jdbcType=BIGINT}, #{userOrderId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT},
+      #{firstProductImgPath,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL},
+      #{num,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.UserOrderProduct">
+    insert into user_order_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="userOrderId != null">
+        user_order_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="firstProductImgPath != null">
+        first_product_img_path,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productPrice != null">
+        product_price,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="userOrderId != null">
+        #{userOrderId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="firstProductImgPath != null">
+        #{firstProductImgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.UserOrderProduct">
+    update user_order_product
+    <set>
+      <if test="userOrderId != null">
+        user_order_id = #{userOrderId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="firstProductImgPath != null">
+        first_product_img_path = #{firstProductImgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        product_price = #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.UserOrderProduct">
+    update user_order_product
+    set user_order_id = #{userOrderId,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      first_product_img_path = #{firstProductImgPath,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DECIMAL},
+      num = #{num,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据用户订单id查询订单商品列表-->
+  <select id="selectListByUserOrderId" parameterType="java.lang.Long" resultMap="BaseResultLogisticsMap">
+    select
+    uop.id,
+    uop.first_product_img_path,
+    uop.product_name,
+    uop.product_id,
+    uop.product_price,
+    uop.num,
+    ifnull(uol.status, 0) as logistics_status
+    from user_order_product uop
+    left join user_order_logistics uol
+    on uol.user_order_product_id=uop.id
+    where uop.user_order_id=${value}
+  </select>
+
+    <!--为订单批量增加商品-->
+  <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into user_order_product
+    (id, user_order_id, product_id, first_product_img_path, product_name, product_price, num, remark)
+    values
+    <foreach collection="userOrderProductList" item="item" index="index" separator=",">
+      (#{item.id}, #{userOrderId}, #{item.productId}, #{item.firstProductImgPath},
+      #{item.productName}, #{item.productPrice}, #{item.num}, #{item.remark})
+    </foreach>
+  </insert>
+
+  <!--根据订单id获取订单中的商品-->
+  <select id="getByUserOrderId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from user_order_product
+    where user_order_id=#{userOrderId}
+  </select>
+
+</mapper>

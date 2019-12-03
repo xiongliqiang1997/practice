@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ProductInboundRecordDetailMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.ProductInboundRecordDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_inbound_record_id" jdbcType="BIGINT" property="productInboundRecordId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+  </resultMap>
+  <resultMap id="BaseResultNameAndFirstImgPathMap" type="com.qiang.practice.model.ProductInboundRecordDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_inbound_record_id" jdbcType="BIGINT" property="productInboundRecordId" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_inbound_record_id, product_id, num
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_inbound_record_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_inbound_record_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.ProductInboundRecordDetail">
+    insert into product_inbound_record_detail (id, product_inbound_record_id, product_id, 
+      num)
+    values (#{id,jdbcType=BIGINT}, #{productInboundRecordId,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
+      #{num,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.ProductInboundRecordDetail">
+    insert into product_inbound_record_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productInboundRecordId != null">
+        product_inbound_record_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productInboundRecordId != null">
+        #{productInboundRecordId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.ProductInboundRecordDetail">
+    update product_inbound_record_detail
+    <set>
+      <if test="productInboundRecordId != null">
+        product_inbound_record_id = #{productInboundRecordId,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.ProductInboundRecordDetail">
+    update product_inbound_record_detail
+    set product_inbound_record_id = #{productInboundRecordId,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--批量生成各个的商品入库数量-->
+  <insert id="batchInsert">
+    insert into product_inbound_record_detail
+    (id, product_inbound_record_id, product_id, num)
+    values
+    <foreach collection="productInboundRecordDetailList" item="item" index="index" separator=",">
+      (#{item.id}, #{productInboundRecordId}, #{item.productId}, #{item.num})
+    </foreach>
+  </insert>
+
+  <!--根据入库记录id查询入库详情列表-->
+  <select id="getByProductInboundRecordId" resultMap="BaseResultNameAndFirstImgPathMap">
+    select
+    picd.id,
+    p.product_name,
+    (   select img_path
+        from product_img
+        where product_id=picd.product_id
+        and is_valid=1
+        order by orderby asc
+        limit 0,1   ) as first_product_img_path,
+    picd.num
+    from product_inbound_record_detail picd
+    join product p
+    on picd.product_id=p.id
+    where picd.product_inbound_record_id=#{value}
+  </select>
+</mapper>

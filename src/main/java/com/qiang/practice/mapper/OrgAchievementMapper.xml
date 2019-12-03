@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.OrgAchievementMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.OrgAchievement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="event_date" jdbcType="TIMESTAMP" property="eventDate" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.OrgAchievement">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, title, sub_title, event_date, is_publish, img_path, create_date, update_date, 
+    is_valid, invalid_date
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from org_achievement
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from org_achievement
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.OrgAchievement">
+    insert into org_achievement (id, sys_user, title, 
+      sub_title, event_date, is_publish, 
+      img_path, create_date, update_date, 
+      is_valid, invalid_date, content
+      )
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{subTitle,jdbcType=VARCHAR}, #{eventDate,jdbcType=TIMESTAMP}, #{isPublish,jdbcType=TINYINT}, 
+      #{imgPath,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      1, #{invalidDate,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.OrgAchievement">
+    update org_achievement
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subTitle != null">
+        sub_title = #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="eventDate != null">
+        event_date = #{eventDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPublish != null">
+        is_publish = #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.OrgAchievement">
+    update org_achievement
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      event_date = #{eventDate,jdbcType=TIMESTAMP},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.OrgAchievement">
+    update org_achievement
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      event_date = #{eventDate,jdbcType=TIMESTAMP},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件查询企业成果-->
+  <select id="getByCondition" resultMap="BaseResultMap">
+    select
+    id,
+    title,
+    SUBSTRING(event_date, 1, 10) as 'event_date',
+    is_publish
+    from org_achievement
+    where is_valid = 1
+    <if test="title != null and title != ''">
+      and title like "%"#{title}"%"
+    </if>
+    <if test="eventDate != null and eventDate != ''">
+      and DATEDIFF(event_date,#{eventDate})=0
+    </if>
+    <if test="isPublish != null and isPublish != ''">
+      and is_publish = #{isPublish}
+    </if>
+    order by event_date desc
+  </select>
+
+  <!--批量删除企业成果,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList">
+    update org_achievement
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量发布企业成果,将发布字段置为1-->
+  <update id="updateIsPublishToOneByIdList">
+    update org_achievement
+    set is_publish=1
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量撤销企业成果,将发布字段置为0-->
+  <update id="updateIsPublishToZeroByIdList">
+    update org_achievement
+    set is_publish=0
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--获取所有已发布的企业成果-->
+  <select id="getAll" resultMap="BaseResultMap">
+    select
+      id,
+      title,
+      sub_title,
+      img_path
+    from org_achievement
+    where is_valid=1
+    and is_publish=1
+    order by event_date desc
+  </select>
+</mapper>

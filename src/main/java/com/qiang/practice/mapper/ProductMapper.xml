@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_type" jdbcType="BIGINT" property="productType" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="publish_date" jdbcType="TIMESTAMP" property="publishDate" />
+    <result column="view_num" jdbcType="INTEGER" property="viewNum" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.Product">
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+
+  <resultMap id="BaseResultImgsMap" type="com.qiang.practice.model.vo.ProductImgVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_type" jdbcType="BIGINT" property="productType" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="view_num" jdbcType="INTEGER" property="viewNum" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+    <collection property="productImgList" ofType="com.qiang.practice.model.ProductImg" column="id" select="com.qiang.practice.mapper.ProductImgMapper.selectListByProductId"/>
+  </resultMap>
+
+  <resultMap id="BaseResultImgFirstMap" type="com.qiang.practice.model.vo.ProductImgVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_type" jdbcType="BIGINT" property="productType" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="view_num" jdbcType="INTEGER" property="viewNum" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="remark" jdbcType="LONGVARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, product_type, sys_user, product_name, product_stock, product_price, is_publish, 
+    publish_date, view_num, create_date, update_date, is_valid, invalid_date
+  </sql>
+  <sql id="Blob_Column_List">
+    remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.Product" useGeneratedKeys="true" keyProperty="id">
+    insert into product (id, product_type, sys_user, 
+      product_name, product_price,
+      is_publish, publish_date, view_num, 
+      create_date, update_date, is_valid, 
+      invalid_date, remark)
+    values (#{id,jdbcType=BIGINT}, #{productType,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, 
+      #{productName,jdbcType=VARCHAR}, #{productPrice,jdbcType=DECIMAL},
+      #{isPublish,jdbcType=TINYINT}, #{publishDate,jdbcType=TIMESTAMP}, #{viewNum,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, 
+      #{invalidDate,jdbcType=TIMESTAMP}, #{remark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.Product">
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productStock != null">
+        product_stock,
+      </if>
+      <if test="productPrice != null">
+        product_price,
+      </if>
+      <if test="isPublish != null">
+        is_publish,
+      </if>
+      <if test="publishDate != null">
+        publish_date,
+      </if>
+      <if test="viewNum != null">
+        view_num,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productStock != null">
+        #{productStock,jdbcType=INTEGER},
+      </if>
+      <if test="productPrice != null">
+        #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="isPublish != null">
+        #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="publishDate != null">
+        #{publishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewNum != null">
+        #{viewNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.Product">
+    update product
+    <set>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productPrice != null">
+        product_price = #{productPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="isPublish != null">
+        is_publish = #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="publishDate != null">
+        publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewNum != null">
+        view_num = #{viewNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.Product">
+    update product
+    set product_type = #{productType,jdbcType=BIGINT},
+      sys_user = #{sysUser,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DECIMAL},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      view_num = #{viewNum,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.Product">
+    update product
+    set product_type = #{productType,jdbcType=BIGINT},
+      sys_user = #{sysUser,jdbcType=BIGINT},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_price = #{productPrice,jdbcType=DECIMAL},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      view_num = #{viewNum,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据分类id将该分类以及其子分类下的商品删除-->
+  <update id="updateIsValidToZeroByTypeId">
+    update product
+    set is_valid = 0, invalid_date = now()
+    where product_type in (
+            select data.id from(
+                select
+                    @ids as _ids,
+                    ( select @ids := group_concat(id)
+                      from product_type
+                      where find_in_set(p_id, @ids)
+                    ) as cids,
+                    @l := @l+1 as level
+                from product_type,
+                (select @ids := #{productTypeId}, @l := 0 ) b
+                where @ids is not null
+            ) id
+            join
+            product_type data
+            on find_in_set(data.id, id._ids)
+            order by level, id
+      )
+  </update>
+
+  <!--根据条件查询商品-->
+  <select id="getListByCondition" resultMap="BaseResultImgFirstMap">
+    select
+      p.id,
+      p.product_type,
+      pt.type_name,
+      p.sys_user,
+      u.user_name,
+      u.login_name,
+      p.product_name,
+      p.product_price,
+      p.view_num,
+      p.remark,
+      p.is_publish,
+      p.create_date,
+      ( select img_path
+      from product_img
+      where product_id=p.id and is_valid=1
+      order by orderby asc limit 0,1) as first_product_img_path
+    from product p
+    join product_type pt
+    on p.product_type=pt.id
+    join sys_user u
+    on p.sys_user=u.id
+    where pt.is_valid=1 and p.is_valid=1
+    <if test="type != null and type != ''">
+      and p.is_publish=1
+    </if>
+    <if test="typeName != null and typeName != ''">
+      and pt.type_name like "%"#{typeName}"%"
+    </if>
+    <if test="productType != null and productType != ''">
+      and pt.id in (
+            select data.id from(
+                select
+                    @ids as _ids,
+                    ( select @ids := group_concat(id)
+                      from product_type
+                      where find_in_set(p_id, @ids)
+                    ) as cids,
+                    @l := @l+1 as level
+                from product_type,
+                (select @ids :=#{productType}, @l := 0 ) b
+                where @ids is not null
+            ) id
+            join
+            product_type data
+            on find_in_set(data.id, id._ids) and data.is_valid=1
+            order by level, id)
+    </if>
+    <if test="productName != null and productName != ''">
+      and p.product_name like "%"#{productName}"%"
+    </if>
+    <if test="isPublish != null and isPublish != ''">
+      and p.is_publish = #{isPublish}
+    </if>
+    <if test="minProductPrice != null and minProductPrice != ''">
+      and p.product_price &gt;= #{minProductPrice}
+    </if>
+    <if test="maxProductPrice != null and maxProductPrice != ''">
+      and p.product_price &lt;= #{maxProductPrice}
+    </if>
+    order by
+    <choose>
+      <when test="productPrice != null and productPrice != ''">
+        product_price ${productPrice}
+      </when>
+      <when test="viewNum != null and viewNum != ''">
+        view_num ${viewNum}
+      </when>
+      <otherwise>
+        view_num desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--根据id查单个商品的详细信息（包括图片列表）-->
+  <select id="getById" resultMap="BaseResultImgsMap">
+    select
+      p.id,
+      p.product_type,
+      pt.type_name,
+      p.sys_user,
+      u.user_name,
+      u.login_name,
+      p.product_name,
+      p.product_price,
+      p.view_num,
+      p.remark,
+      p.is_publish,
+      ( select img_path
+        from product_img
+        where product_id=p.id and is_valid=1
+        order by orderby asc limit 0,1) as first_product_img_path
+    from product p
+    join product_type pt
+    on p.product_type=pt.id and p.is_valid=1
+    join sys_user u
+    on p.sys_user=u.id
+    where p.id=#{id}
+  </select>
+
+    <!--批量删除商品,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList">
+    update product
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量修改商品的isPublish字段-->
+  <update id="updateIsPublishByIdList">
+    update product
+    set is_publish=#{isPublish}
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--将该商品的浏览数量+1-->
+  <update id="addViewNum">
+    update product
+    set view_num = view_num+1
+    where id=#{id} and is_valid=1
+  </update>
+
+    <!--根据id数组获取商品（内含商品第一张图片）-->
+  <select id="getByIdList" resultMap="BaseResultImgFirstMap">
+    select
+      p.id,
+      p.product_type,
+      pt.type_name,
+      p.sys_user,
+      u.user_name,
+      u.login_name,
+      p.product_name,
+      p.product_price,
+      p.view_num,
+      p.remark,
+      p.is_publish,
+      ( select img_path
+        from product_img
+        where product_id=p.id and is_valid=1
+        order by orderby asc limit 0,1) as first_product_img_path
+    from product p
+    join product_type pt
+    on p.product_type=pt.id and p.is_valid=1
+    join sys_user u
+    on p.sys_user=u.id
+    where find_in_set(p.id, #{idListStr})>0
+    order by find_in_set(p.id, #{idListStr})
+  </select>
+
+  <!--批量为每件商品减库存-->
+  <update id="batchReduceProductStock">
+    <foreach collection="userOrderProductList" item="userOrderProduct" open="" close="" separator=";">
+      update product
+      set product_stock=product_stock-#{userOrderProduct.num}
+      where id=#{userOrderProduct.productId}
+    </foreach>
+  </update>
+
+  <!--检查订单中的各商品是否还存在-->
+  <select id="checkIsValidByIdList" resultType="java.lang.String">
+    select productName  from
+    <foreach collection="UserOrderProductList" item="UserOrderProduct" open="(" close=")" separator=" UNION ">
+      select #{UserOrderProduct.productId} as id, #{UserOrderProduct.productName} as productName
+    </foreach>
+    t
+    where t.id not in (select id from product);
+  </select>
+
+  <!--根据productId计算总金额-->
+  <select id="getAmountTotal" resultType="java.math.BigDecimal">
+    select sum(p.product_price * uop.num - ifnull(uop.discount_amount, 0))
+    from product p
+    join user_order_product uop
+    on uop.product_id=p.id
+    where p.is_valid=1
+    and uop.id in
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+      #(item.id)
+    </foreach>
+  </select>
+
+  <!--根据商品id字符串获取商品信息和商品第一张图片-->
+  <select id="getJustProductInfoAndFirstImgByIdListStr" resultMap="BaseResultImgFirstMap">
+    select
+      p.id,
+      p.product_type,
+      p.sys_user,
+      p.product_name,
+      p.product_price,
+      p.view_num,
+      p.remark,
+      p.is_publish,
+      ( select img_path
+        from product_img
+        where product_id=p.id and is_valid=1
+        order by orderby asc limit 0,1) as first_product_img_path
+    from product p
+    where find_in_set(p.id, #{idListStr})>0
+    order by find_in_set(p.id, #{idListStr})
+  </select>
+</mapper>

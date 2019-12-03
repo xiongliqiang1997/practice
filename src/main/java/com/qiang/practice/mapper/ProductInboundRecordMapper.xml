@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ProductInboundRecordMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.ProductInboundRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="product_source" jdbcType="VARCHAR" property="productSource" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <resultMap id="BaseResultUserNameMap" type="com.qiang.practice.model.vo.ProductInboundRecordAndDetailVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="product_source" jdbcType="VARCHAR" property="productSource" />
+    <result column="product_count" jdbcType="INTEGER" property="productCount" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <resultMap id="BaseResultProductDetailMap" type="com.qiang.practice.model.vo.ProductInboundRecordAndDetailVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="product_source" jdbcType="VARCHAR" property="productSource" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <collection property="productInboundRecordDetailList" ofType="com.qiang.practice.model.ProductInboundRecordDetail"
+                column="id" select="com.qiang.practice.mapper.ProductInboundRecordDetailMapper.getByProductInboundRecordId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, product_source, create_date, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_inbound_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_inbound_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.ProductInboundRecord" useGeneratedKeys="true" keyProperty="id">
+    insert into product_inbound_record (id, sys_user, product_source, 
+      create_date, remark)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{productSource,jdbcType=VARCHAR}, 
+      now(), #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.ProductInboundRecord">
+    insert into product_inbound_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="productSource != null">
+        product_source,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productSource != null">
+        #{productSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.ProductInboundRecord">
+    update product_inbound_record
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productSource != null">
+        product_source = #{productSource,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.ProductInboundRecord">
+    update product_inbound_record
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      product_source = #{productSource,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--条件查询-->
+  <select id="getListByCondition" resultMap="BaseResultUserNameMap">
+    select
+    pir.id,
+    u.user_name,
+    pir.product_source,
+    (   select count(id)
+        from product_inbound_record_detail
+        where product_inbound_record_id = pir.id    ) as product_count,
+    pir.create_date,
+    pir.remark
+    from product_inbound_record pir
+    join sys_user u
+    on pir.sys_user=u.id
+    <where>
+      <if test="userName != null and userName != ''">
+        and u.user_name like "%"#{userName}"%"
+      </if>
+      <if test="createDate != null and createDate != ''">
+        and DATEDIFF(pir.create_date,#{createDate})=0
+      </if>
+    </where>
+    order by pir.create_date desc
+  </select>
+
+  <!--根据id获取入库详情(包括商品名称和第一张商品图片)-->
+  <select id="getById" resultMap="BaseResultProductDetailMap">
+    select
+      id,
+      product_source,
+      create_date,
+      remark
+    from product_inbound_record
+    where id=#{id}
+  </select>
+
+  <!--获取所有入库记录（包括入库详情）-->
+  <select id="getList" resultMap="BaseResultProductDetailMap">
+    select
+    pir.id,
+    u.user_name,
+    pir.product_source,
+    (   select count(id)
+    from product_inbound_record_detail
+    where product_inbound_record_id = pir.id    ) as product_count,
+    pir.create_date,
+    pir.remark
+    from product_inbound_record pir
+    join sys_user u
+    on pir.sys_user=u.id
+    order by pir.create_date desc
+  </select>
+</mapper>

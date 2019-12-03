@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ProductImgMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.ProductImg">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="orderby" jdbcType="TINYINT" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_id, img_path, orderby, create_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_img
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_img
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.ProductImg">
+    insert into product_img (id, product_id, img_path, 
+      orderby, create_date, is_valid, 
+      invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, #{imgPath,jdbcType=VARCHAR}, 
+      #{orderby,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, 
+      #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.ProductImg">
+    insert into product_img
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="imgPath != null">
+        img_path,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="imgPath != null">
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.ProductImg">
+    update product_img
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.ProductImg">
+    update product_img
+    set product_id = #{productId,jdbcType=BIGINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--根据商品id查询图片-->
+  <select id="selectListByProductId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, img_path
+    from product_img
+    where product_id=${value}
+    and is_valid=1
+  </select>
+
+  <!--批量添加商品图片-->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into product_img
+    (id, product_id, img_path, orderby, create_date, is_valid)
+    values
+    <foreach collection="productImgList" item="item" index="index" separator=",">
+      (#{item.id}, #{productId}, #{item.imgPath}, #{index}, now(), 1)
+    </foreach>
+  </insert>
+
+  <!--根据商品id将图片置为无效-->
+  <update id="updateIsValidToZeroByProductId">
+    update product_img
+    set is_valid=0, invalid_date = now()
+    where product_id=#{productId} and is_valid=1
+  </update>
+
+  <!--根据商品id删除图片-->
+  <update id="updateIsValidToZeroByProductIdList">
+    update product_img
+    set is_valid=0, invalid_date = now()
+    where is_valid=1
+    and product_id in
+    <foreach item="id" collection="productIdList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+</mapper>

@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.OrgImpressionMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.OrgImpression">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="event_date" jdbcType="TIMESTAMP" property="eventDate" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.OrgImpression">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, title, sub_title, event_date, is_publish, img_path, create_date, update_date, 
+    is_valid, invalid_date
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from org_impression
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from org_impression
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.OrgImpression">
+    insert into org_impression (id, sys_user, title, 
+      sub_title, event_date, is_publish, 
+      img_path, create_date, update_date, 
+      is_valid, invalid_date, content
+      )
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{subTitle,jdbcType=VARCHAR}, #{eventDate,jdbcType=TIMESTAMP}, #{isPublish,jdbcType=TINYINT}, 
+      #{imgPath,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      1, #{invalidDate,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.OrgImpression">
+    insert into org_impression
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="subTitle != null">
+        sub_title,
+      </if>
+      <if test="eventDate != null">
+        event_date,
+      </if>
+      <if test="isPublish != null">
+        is_publish,
+      </if>
+      <if test="imgPath != null">
+        img_path,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subTitle != null">
+        #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="eventDate != null">
+        #{eventDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPublish != null">
+        #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.OrgImpression">
+    update org_impression
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subTitle != null">
+        sub_title = #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="eventDate != null">
+        event_date = #{eventDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isPublish != null">
+        is_publish = #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.OrgImpression">
+    update org_impression
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      event_date = #{eventDate,jdbcType=TIMESTAMP},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.OrgImpression">
+    update org_impression
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      event_date = #{eventDate,jdbcType=TIMESTAMP},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件查询对应的企业印象-->
+  <select id="getListByCondition" resultType="java.util.Map">
+    select
+    id,
+    title,
+    SUBSTRING(event_date, 1, 10) as 'eventDate',
+    is_publish as 'isPublish'
+    from org_impression
+    where is_valid = 1
+    <if test="title != null and title != ''">
+      and title like "%"#{title}"%"
+    </if>
+    <if test="eventDate != null and eventDate != ''">
+      and DATEDIFF(event_date,#{eventDate})=0
+    </if>
+    <if test="isPublish != null and isPublish != ''">
+      and is_publish = #{isPublish}
+    </if>
+    order by event_date desc
+  </select>
+
+  <!--批量删除企业印象,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList" parameterType="java.util.List">
+    update org_impression
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量发布企业印象,将发布字段置为1-->
+  <update id="updateIsPublishToOneByIdList" parameterType="java.util.List">
+    update org_impression
+    set is_publish=1
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量撤销企业印象,将发布字段置为0-->
+  <update id="updateIsPublishToZeroByIdList" parameterType="java.util.List">
+    update org_impression
+    set is_publish=0
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--查询所有已发布的企业印象-->
+  <select id="getByYear" resultMap="BaseResultMap">
+    select
+      id,
+      title,
+      sub_title,
+      substring(event_date, 1, 10) as 'event_date',
+      img_path,
+      content
+    from org_impression
+    where is_valid=1
+    and is_publish=1
+    and if(isnull(#{year}), year(event_date)=year(now()), year(event_date)=#{year})
+    order by event_date desc
+  </select>
+
+  <!--获取有数据的年的列表-->
+  <select id="getYearListWhichHaveData" resultType="java.lang.String">
+    select distinct(substring(event_date, 1, 4)) as 'years'
+    from org_impression
+    where is_valid=1 and is_publish=1
+    order by years desc
+  </select>
+</mapper>

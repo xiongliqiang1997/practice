@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.PlateInfoMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.PlateInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="plate" jdbcType="BIGINT" property="plate" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="sub_title" jdbcType="VARCHAR" property="subTitle" />
+    <result column="is_top" jdbcType="TINYINT" property="isTop" />
+    <result column="is_publish" jdbcType="TINYINT" property="isPublish" />
+    <result column="org_impression" jdbcType="TINYINT" property="orgImpression" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="publish_date" jdbcType="TIMESTAMP" property="publishDate" />
+    <result column="event_date" jdbcType="TIMESTAMP" property="eventDate" />
+    <result column="read_num" jdbcType="INTEGER" property="readNum" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.PlateInfo">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plate, sys_user, title, sub_title, is_top, is_publish, org_impression, img_path,
+    publish_date, read_num, create_date, update_date, is_valid, invalid_date, event_date
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from plate_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from plate_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.PlateInfo">
+    insert into plate_info (id, plate, sys_user, 
+      title, sub_title, is_top, 
+      is_publish, org_impression, img_path,
+      publish_date, read_num, create_date, 
+      update_date, is_valid, invalid_date, 
+      content, event_date)
+    values (#{id,jdbcType=BIGINT}, #{plate,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, 
+      #{title,jdbcType=VARCHAR}, #{subTitle,jdbcType=VARCHAR}, #{isTop,jdbcType=TINYINT}, 
+      #{isPublish,jdbcType=TINYINT}, #{orgImpression,jdbcType=TINYINT}, #{imgPath,jdbcType=VARCHAR},
+      #{publishDate,jdbcType=TIMESTAMP}, #{readNum,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, #{invalidDate,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR}, #{eventDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.PlateInfo">
+    insert into plate_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plate != null">
+        plate,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="subTitle != null">
+        sub_title,
+      </if>
+      <if test="isTop != null">
+        is_top,
+      </if>
+      <if test="isPublish != null">
+        is_publish,
+      </if>
+      <if test="orgImpression != null">
+        org_impression,
+      </if>
+      <if test="imgPath != null">
+        img_path,
+      </if>
+      <if test="publishDate != null">
+        publish_date,
+      </if>
+      <if test="readNum != null">
+        read_num,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="plate != null">
+        #{plate,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subTitle != null">
+        #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="isTop != null">
+        #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="isPublish != null">
+        #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="orgImpression != null">
+        #{orgImpression,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null">
+        #{publishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readNum != null">
+        #{readNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.PlateInfo">
+    update plate_info
+    <set>
+      <if test="plate != null">
+        plate = #{plate,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="subTitle != null">
+        sub_title = #{subTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="isTop != null">
+        is_top = #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="isPublish != null">
+        is_publish = #{isPublish,jdbcType=TINYINT},
+      </if>
+      <if test="orgImpression != null">
+        org_impression = #{orgImpression,jdbcType=TINYINT},
+      </if>
+      <if test="imgPath != null">
+        img_path = #{imgPath,jdbcType=VARCHAR},
+      </if>
+      <if test="publishDate != null">
+        publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="readNum != null">
+        read_num = #{readNum,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="eventDate != null">
+        event_date = #{eventDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.PlateInfo">
+    update plate_info
+    set plate = #{plate,jdbcType=BIGINT},
+      sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      is_top = #{isTop,jdbcType=TINYINT},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      org_impression = #{orgImpression,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      read_num = #{readNum,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR},
+      event_date = #{eventDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.PlateInfo">
+    update plate_info
+    set plate = #{plate,jdbcType=BIGINT},
+      sys_user = #{sysUser,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sub_title = #{subTitle,jdbcType=VARCHAR},
+      is_top = #{isTop,jdbcType=TINYINT},
+      is_publish = #{isPublish,jdbcType=TINYINT},
+      org_impression = #{orgImpression,jdbcType=TINYINT},
+      img_path = #{imgPath,jdbcType=VARCHAR},
+      publish_date = #{publishDate,jdbcType=TIMESTAMP},
+      read_num = #{readNum,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件查询对应的信息发布列表-->
+  <select id="getListByCondition" resultType="java.util.Map">
+    select
+      pi.id as 'id',
+      pi.title as 'title',
+      ifnull(pi.sub_title, '(无)') as 'subTitle',
+      pi.sys_user as 'sysUser',
+      SUBSTRING(pi.create_date, 1, 10) as 'createDate',
+      pi.is_top as 'isTop',
+      pi.is_publish as 'isPublish',
+      u.user_name as 'userName',
+      SUBSTRING(pi.event_date, 1, 10) as 'eventDate',
+      pi.img_path as 'imgPath'
+    from plate_info pi
+    join sys_user u
+    on pi.sys_user=u.id
+    join plate p
+    on pi.plate=p.id and p.is_valid=1
+    where pi.is_valid=1
+    <if test="type != null and type != ''">
+      and pi.is_publish = 1
+    </if>
+    <if test="plate != null and plate != ''">
+      and p.id = #{plate}
+    </if>
+    <if test="title != null and title != ''">
+      and pi.title like "%"#{title}"%"
+    </if>
+    <if test="subTitle != null and subTitle != ''">
+      and pi.sub_title like "%"#{subTitle}"%"
+    </if>
+    <if test="userName != null and userName != ''">
+      and u.user_name like "%"#{userName}"%"
+    </if>
+    <if test="createDate != null and createDate != ''">
+      and DATEDIFF(pi.create_date,#{createDate})=0
+    </if>
+    <if test="isTop != null and isTop != ''">
+      and pi.is_top = #{isTop}
+    </if>
+    <if test="isPublish != null and isPublish != ''">
+      and pi.is_publish = #{isPublish}
+    </if>
+    order by pi.event_date desc
+  </select>
+
+  <!--根据板块id数组删除这些板块下的信息-->
+  <update id="updateIsValidToZeroByPlateIdList" parameterType="java.util.List">
+    update plate_info
+    set is_valid = 0, invalid_date = now()
+    where plate in
+    <foreach item="plate" collection="idList" separator="," open="(" close=")" index="">
+      #{plate, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--根据id查询详细信息-->
+  <select id="getDetailById" resultType="java.util.Map">
+    select
+    id,
+    plate,
+    title,
+    sub_title as 'subTitle',
+    is_top as 'isTop',
+    is_publish as 'isPublish',
+    org_impression as 'orgImpression',
+    org_achievement as 'orgAchievement',
+    img_path as 'imgPath',
+    substring(event_date, 1, 10) as 'eventDate',
+    content
+    from plate_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!--批量删除信息,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList" parameterType="java.util.List">
+    update plate_info
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量发布企业印象,将发布字段置为1-->
+  <update id="updateIsPublishToOneByIdList" parameterType="java.util.List">
+    update plate_info
+    set is_publish=1,
+        publish_date=(case
+                      when publish_date is NULL then CURRENT_DATE
+                      else publish_date
+                      end )
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量撤销企业印象,将发布字段置为0-->
+  <update id="updateIsPublishToZeroByIdList" parameterType="java.util.List">
+    update plate_info
+    set is_publish=0
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--根据月份查询当月的发布数量-->
+  <select id="getPublishCountByMonth" resultType="java.lang.Integer">
+    select count(id)
+    from plate_info
+    where substring(publish_date, 1 , 4)=#{year} and substring(publish_date, 6 , 2) = #{month}
+    and is_valid=1 and is_publish=1 and plate = #{plate}
+  </select>
+
+  <!--根据id获取发布日期-->
+  <select id="getPublishDateById" resultType="java.util.Date">
+    select publish_date
+    from plate_info
+    where id=#{id}
+  </select>
+
+  <!--根据板块id获取该板块前四条信息-->
+  <select id="getFirstFourInfoByPlate" resultType="java.util.Map">
+    select
+      id,
+      plate,
+      content,
+      title,
+      substring(event_date, 1, 19) as 'eventDate',
+      img_path as 'imgPath'
+    from plate_info
+    where is_valid=1 and is_publish=1
+    and plate=#{plate}
+    order by is_top desc,event_date desc
+    limit 0,#{showNum}
+  </select>
+
+  <!--获取各板块前四条信息-->
+  <select id="getFirstFourEveryPlate" resultType="java.util.Map">
+    select
+      b.id,
+      b.content,
+      title,
+      b.img_path as 'imgPath',
+      substring(event_date, 1, 19) as 'eventDate',
+      b.plate
+    from(
+          select
+            pi.id as id,
+            pi.title as title,
+            pi.content as content,
+            pi.img_path as img_path,
+            pi.plate as plate,
+            pi.event_date as event_date,
+            if(@tmp=pi.plate,@rank:=@rank + 1,@rank:=1) as new_rank,
+            @tmp:=pi.plate as tmp
+          from plate_info pi
+          join plate p
+          on pi.plate=p.id and pi.is_valid=1 and p.is_valid=1 and is_use=1
+          order by pi.plate,pi.event_date,pi.is_top desc
+      ) b
+    where b.new_rank &lt;= 4
+  </select>
+</mapper>

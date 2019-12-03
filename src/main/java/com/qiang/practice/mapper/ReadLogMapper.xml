@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ReadLogMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.ReadLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="plate_info" jdbcType="BIGINT" property="plateInfo" />
+    <result column="read_time" jdbcType="TIMESTAMP" property="readTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, plate_info, read_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from read_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from read_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.ReadLog">
+    insert into read_log (id, sys_user, plate_info, 
+      read_time)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{plateInfo,jdbcType=BIGINT}, 
+      #{readTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.ReadLog">
+    insert into read_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="plateInfo != null">
+        plate_info,
+      </if>
+      <if test="readTime != null">
+        read_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="plateInfo != null">
+        #{plateInfo,jdbcType=BIGINT},
+      </if>
+      <if test="readTime != null">
+        #{readTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.ReadLog">
+    update read_log
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="plateInfo != null">
+        plate_info = #{plateInfo,jdbcType=BIGINT},
+      </if>
+      <if test="readTime != null">
+        read_time = #{readTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.ReadLog">
+    update read_log
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      plate_info = #{plateInfo,jdbcType=BIGINT},
+      read_time = #{readTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据年份、月份和板块id查询该板块在这一年这一月的发布数量-->
+  <select id="getReadCountByMonth" resultType="java.lang.Integer">
+    select count(rl.id)
+    from read_log rl
+    join plate_info pi
+    on rl.plate_info=pi.id
+    where pi.plate=#{plate,jdbcType=BIGINT}
+          and substring(rl.read_time, 1 , 4) = #{year,jdbcType=VARCHAR}
+          and substring(rl.read_time, 6 , 2) = #{month,jdbcType=VARCHAR}
+  </select>
+</mapper>

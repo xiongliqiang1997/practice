@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.PlateMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.Plate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="plate_name" jdbcType="VARCHAR" property="plateName" />
+    <result column="is_use" jdbcType="TINYINT" property="isUse" />
+    <result column="plate_icon" jdbcType="VARCHAR" property="plateIcon" />
+    <result column="plate_img" jdbcType="VARCHAR" property="plateImg" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, plate_name, is_use, plate_icon, plate_img, orderby, create_date, update_date, 
+    is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from plate
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from plate
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.Plate">
+    insert into plate (id, plate_name, is_use, 
+      plate_icon, plate_img, orderby, 
+      create_date, update_date, is_valid, 
+      invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{plateName,jdbcType=VARCHAR}, #{isUse,jdbcType=TINYINT}, 
+      #{plateIcon,jdbcType=VARCHAR}, #{plateImg,jdbcType=VARCHAR}, #{orderby,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, #{isValid,jdbcType=TINYINT}, 
+      #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.Plate">
+    insert into plate
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="plateName != null">
+        plate_name,
+      </if>
+      <if test="isUse != null">
+        is_use,
+      </if>
+      <if test="plateIcon != null">
+        plate_icon,
+      </if>
+      <if test="plateImg != null">
+        plate_img,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="plateName != null">
+        #{plateName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUse != null">
+        #{isUse,jdbcType=TINYINT},
+      </if>
+      <if test="plateIcon != null">
+        #{plateIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="plateImg != null">
+        #{plateImg,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.Plate">
+    update plate
+    <set>
+      <if test="plateName != null">
+        plate_name = #{plateName,jdbcType=VARCHAR},
+      </if>
+      <if test="isUse != null">
+        is_use = #{isUse,jdbcType=TINYINT},
+      </if>
+      <if test="plateIcon != null">
+        plate_icon = #{plateIcon,jdbcType=VARCHAR},
+      </if>
+      <if test="plateImg != null">
+        plate_img = #{plateImg,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.Plate">
+    update plate
+    set plate_name = #{plateName,jdbcType=VARCHAR},
+      is_use = #{isUse,jdbcType=TINYINT},
+      plate_icon = #{plateIcon,jdbcType=VARCHAR},
+      plate_img = #{plateImg,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据动态条件查询对应的企业印象-->
+  <select id="getListByPage" resultType="java.util.Map">
+    select
+    id,
+    plate_name as 'plateName',
+    plate_icon as 'plateIcon',
+    is_use as 'isUse'
+    from plate
+    where is_valid = 1
+    <if test="plateName != null and plateName != ''">
+      and plate_name like "%"#{plateName}"%"
+    </if>
+    <if test="isUse != null and isUse != ''">
+      and is_use like "%"#{isUse}"%"
+    </if>
+    order by orderby asc
+  </select>
+
+  <!--在已经有的最大排序号上加1-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from plate
+    where is_valid=1
+  </select>
+
+  <!--批量删除板块,将有效字段置为0-->
+  <update id="updateIsValidToZeroByIdList" parameterType="java.util.List">
+    update plate
+    set is_valid=0, invalid_date = now()
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量启用板块,将发布字段置为1-->
+  <update id="updateIsPublishToOneByIdList" parameterType="java.util.List">
+    update plate
+    set is_use=1
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--批量撤销板块,将发布字段置为0-->
+  <update id="updateIsPublishToZeroByIdList" parameterType="java.util.List">
+    update plate
+    set is_use=0
+    where id in
+    <foreach item="id" collection="idList" separator="," open="(" close=")" index="">
+      #{id, jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <!--获取该板块名的数量-->
+  <select id="getPlateNameCount" resultType="java.lang.Integer">
+    select count(id)
+    from plate
+    where is_valid=1
+    and plate_name = #{plateName}
+    <if test="id != null and id != ''">
+      and id &lt;&gt; #{id}
+    </if>
+  </select>
+
+  <!--获取需要排序的板块数据-->
+  <select id="getSortData" resultType="java.util.Map">
+    select
+    id,
+    plate_name as 'plateName',
+    orderby
+    from plate
+    where is_valid=1
+    order by orderby asc
+  </select>
+
+  <!--根据id修改orderby字段-->
+  <update id="sort">
+    update plate
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+
+  <!--获取左侧菜单所需要的json格式数据-->
+  <select id="getPlateNameMenu" resultType="java.util.Map">
+    select
+     id,
+     plate_name as 'plateName'
+    from plate
+    where is_valid = 1
+    order by orderby asc
+  </select>
+
+  <!--获取全部板块列表-->
+  <select id="getPlateList" resultType="java.util.Map">
+     select
+       id,
+       plate_name as 'plateName',
+       plate_icon as 'plateIcon',
+       plate_img as 'plateImg'
+     from plate
+     where is_valid=1 and is_use=1
+     order by orderby asc
+  </select>
+
+</mapper>

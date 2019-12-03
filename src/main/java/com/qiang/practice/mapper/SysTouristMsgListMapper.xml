@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysTouristMsgListMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysTouristMsgList">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="VARCHAR" property="sysUser" />
+    <result column="another_user_id" jdbcType="VARCHAR" property="anotherUserId" />
+    <result column="last_msg_date" jdbcType="TIMESTAMP" property="lastMsgDate" />
+  </resultMap>
+
+  <resultMap id="BaseResultAndUserMap" type="com.qiang.practice.model.vo.SysTouristMsgListUserNameMsgVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="VARCHAR" property="sysUser" />
+    <result column="another_user_id" jdbcType="VARCHAR" property="anotherUserId" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="img_path" jdbcType="VARCHAR" property="imgPath" />
+    <result column="un_read_num" jdbcType="INTEGER" property="unReadNum" />
+    <result column="last_msg" jdbcType="LONGVARCHAR" property="lastMsg" />
+    <result column="last_msg_date" jdbcType="TIMESTAMP" property="lastMsgDate" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, another_user_id, last_msg_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_tourist_msg_list
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_tourist_msg_list
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.qiang.practice.model.SysTouristMsgList">
+    insert into sys_tourist_msg_list (id, sys_user, another_user_id,
+      last_msg_date)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=VARCHAR}, #{anotherUserId,jdbcType=VARCHAR},
+      #{lastMsgDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.SysTouristMsgList">
+    insert into sys_tourist_msg_list
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="anotherUserId != null">
+        another_user_id,
+      </if>
+      <if test="lastMsgDate != null">
+        last_msg_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=VARCHAR},
+      </if>
+      <if test="anotherUserId != null">
+        #{anotherUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastMsgDate != null">
+        #{lastMsgDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysTouristMsgList">
+    update sys_tourist_msg_list
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=VARCHAR},
+      </if>
+      <if test="anotherUserId != null">
+        another_user_id = #{anotherUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="lastMsgDate != null">
+        last_msg_date = #{lastMsgDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysTouristMsgList">
+    update sys_tourist_msg_list
+    set sys_user = #{sysUser,jdbcType=VARCHAR},
+      another_user_id = #{anotherUserId,jdbcType=VARCHAR},
+      last_msg_date = #{lastMsgDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <!--批量插入，不存在则插入，存在则不插入-->
+  <insert id="batchInsertIfAbsent" parameterType="java.util.List">
+    insert into sys_tourist_msg_list
+    (sys_user, another_user_id, last_msg_date )
+    <foreach collection="sysTouristMsgLists" item="sysTouristMsgList" separator="union all">
+      (select #{sysTouristMsgList.sysUser}, #{sysTouristMsgList.anotherUserId}, #{sysTouristMsgList.lastMsgDate} from DUAL
+      where not exists (
+          select id from sys_tourist_msg_list stml
+          where stml.sys_user= #{sysTouristMsgList.sysUser}
+          and stml.another_user_id = #{sysTouristMsgList.anotherUserId})
+      )
+    </foreach>
+  </insert>
+
+  <!--获取游客与客服的聊天列表-->
+  <select id="friendList" resultMap="BaseResultAndUserMap">
+    select
+        stml.id,
+        stml.sys_user,
+        stml.another_user_id,
+        ifnull(concat('客服-', u.user_name), concat('游客-', stml.another_user_id)) as user_name,
+        u.img_path,
+        (   select if(is_recall=0,
+                        if(msg_type = 'text', msg, if(msg_type = 'image', '[图片]', '[文件]')),
+                        if(from_user_id=#{sysUser}, '你撤回了一条消息', '对方撤回了一条消息'))
+            from sys_tourist_msg
+            where ((from_user_id=#{sysUser} and to_user_id=stml.another_user_id)
+             or (from_user_id=stml.another_user_id and to_user_id=#{sysUser}))
+             and (del_user_id &lt;&gt; #{sysUser} or del_user_id is  null)
+            order by create_date desc,id desc
+            limit 1 ) as last_msg,
+        (	select count(id)
+            from sys_tourist_msg
+            where from_user_id=stml.another_user_id
+            and to_user_id=#{sysUser} and is_read=0 and is_recall=0
+        ) as un_read_num,
+        stml.last_msg_date as last_msg_date,
+        sus.status
+    from sys_tourist_msg_list stml
+    left join sys_user u
+    on stml.another_user_id=u.id
+    left join sys_user_status sus
+    on u.id=sus.sys_user
+    where stml.sys_user=#{sysUser}
+    order by stml.last_msg_date desc
+  </select>
+
+  <!--如果没有则增加-->
+  <insert id="insertIfAbsent">
+    insert into sys_tourist_msg_list
+    (sys_user, another_user_id, last_msg_date )
+    select #{sysUser}, #{anotherUserId}, #{lastMsgDate}
+    from DUAL
+    where not exists (
+      select id from sys_tourist_msg_list stml
+      where stml.sys_user= #{sysUser}
+      and stml.another_user_id = #{anotherUserId}  )
+  </insert>
+
+  <!--将游客的最近聊天列表和聊天记录清空-->
+  <delete id="clearMsgInfo">
+    delete from sys_tourist_msg_list
+    where sys_user = #{clientId} or another_user_id = #{clientId};
+    delete from sys_tourist_msg
+    where from_user_id = #{clientId} or to_user_id = #{clientId};
+  </delete>
+
+  <!--获取跟该用户聊过天的人的id列表-->
+  <select id="getIdListWhoChatWithHim" resultType="java.lang.String">
+    select sys_user
+    from sys_tourist_msg_list
+    where another_user_id = #{clientId}
+  </select>
+
+  <!--发完消息后,更新双方的左侧最近聊天列表-->
+  <insert id="insertAfterSendMsg">
+    insert into sys_tourist_msg_list
+    (sys_user, another_user_id, last_msg_date )
+    select #{sysUser}, #{anotherUserId}, #{lastMsgDate}
+    from DUAL
+    where not exists (
+      select id from sys_tourist_msg_list stml
+      where stml.sys_user= #{sysUser}
+      and stml.another_user_id = #{anotherUserId}  );
+
+    insert into sys_tourist_msg_list
+    (sys_user, another_user_id, last_msg_date )
+    select #{anotherUserId}, #{sysUser}, #{lastMsgDate}
+    from DUAL
+    where not exists (
+      select id from sys_tourist_msg_list stml
+      where stml.sys_user= #{anotherUserId}
+      and stml.another_user_id = #{sysUser}  );
+
+    update sys_tourist_msg_list
+    set last_msg_date = #{lastMsgDate}
+    where (sys_user = #{sysUser} and another_user_id = #{anotherUserId})
+                or
+          (sys_user = #{anotherUserId} and another_user_id = #{sysUser})
+  </insert>
+</mapper>

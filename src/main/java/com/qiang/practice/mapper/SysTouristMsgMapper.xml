@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysTouristMsgMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysTouristMsg">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="from_user_id" jdbcType="VARCHAR" property="fromUserId" />
+    <result column="to_user_id" jdbcType="VARCHAR" property="toUserId" />
+    <result column="msg_type" jdbcType="VARCHAR" property="msgType" />
+    <result column="is_recall" jdbcType="TINYINT" property="isRecall" />
+    <result column="is_read" jdbcType="TINYINT" property="isRead" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.SysTouristMsg">
+    <result column="msg" jdbcType="LONGVARCHAR" property="msg" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, from_user_id, to_user_id, msg_type, is_recall, is_read, create_date
+  </sql>
+  <sql id="Blob_Column_List">
+    msg
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_tourist_msg
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_tourist_msg
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.SysTouristMsg" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_tourist_msg (id, from_user_id, to_user_id, 
+      msg_type, is_recall, is_read, create_date, msg
+      )
+    values (#{id,jdbcType=BIGINT}, #{fromUserId,jdbcType=VARCHAR}, #{toUserId,jdbcType=VARCHAR}, 
+      #{msgType,jdbcType=VARCHAR}, #{isRecall,jdbcType=TINYINT}, #{isRead,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{msg,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.SysTouristMsg">
+    insert into sys_tourist_msg
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="fromUserId != null">
+        from_user_id,
+      </if>
+      <if test="toUserId != null">
+        to_user_id,
+      </if>
+      <if test="msgType != null">
+        msg_type,
+      </if>
+      <if test="isRecall != null">
+        is_recall,
+      </if>
+      <if test="isRead != null">
+        is_read,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="msg != null">
+        msg,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="fromUserId != null">
+        #{fromUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserId != null">
+        #{toUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecall != null">
+        #{isRecall,jdbcType=TINYINT},
+      </if>
+      <if test="isRead != null">
+        #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msg != null">
+        #{msg,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysTouristMsg">
+    update sys_tourist_msg
+    <set>
+      <if test="fromUserId != null">
+        from_user_id = #{fromUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserId != null">
+        to_user_id = #{toUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null">
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="isRecall != null">
+        is_recall = #{isRecall,jdbcType=TINYINT},
+      </if>
+      <if test="isRead != null">
+        is_read = #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="msg != null">
+        msg = #{msg,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.SysTouristMsg">
+    update sys_tourist_msg
+    set from_user_id = #{fromUserId,jdbcType=VARCHAR},
+      to_user_id = #{toUserId,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      is_recall = #{isRecall,jdbcType=TINYINT},
+      is_read = #{isRead,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      msg = #{msg,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysTouristMsg">
+    update sys_tourist_msg
+    set from_user_id = #{fromUserId,jdbcType=VARCHAR},
+      to_user_id = #{toUserId,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      is_recall = #{isRecall,jdbcType=TINYINT},
+      is_read = #{isRead,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--将该游客与该客服的未读消息置为已读-->
+  <update id="setHasReadedByTwoUserId">
+    update sys_tourist_msg
+    set is_read=1
+    where is_read=0
+    and to_user_id=#{clientId}
+    and from_user_id=#{anotherUserId}
+  </update>
+
+    <!--根据客服id分页获取与该客服的消息记录-->
+  <select id="getMsgPageList" resultMap="BaseResultMap">
+    with RECURSIVE cte (id, create_date, num) as
+    (
+        (	select id, create_date, 1 as num
+            from sys_tourist_msg
+            where create_date &lt; #{msgDateBottomLine}
+            and (del_user_id is null or del_user_id &lt;&gt; #{sysUserId})
+            and ((from_user_id=#{sysUserId} and to_user_id=#{anotherUserId})
+            or (from_user_id=#{anotherUserId} and to_user_id=#{sysUserId}))
+            order by id desc limit 1 )
+        union all
+        (   select
+              (	select id
+                from sys_tourist_msg
+                where id &lt; cte.id and (del_user_id is null or del_user_id &lt;&gt; #{sysUserId})
+                and ((from_user_id=#{sysUserId} and to_user_id=#{anotherUserId})
+                or (from_user_id=#{anotherUserId} and to_user_id=#{sysUserId}))
+                order by id desc limit 1
+              ) as id,
+              ( select create_date
+                from sys_tourist_msg
+                where id = (
+                select id
+                from sys_tourist_msg
+                where id &lt; cte.id and (del_user_id is null or del_user_id &lt;&gt; #{sysUserId})
+                and ((from_user_id=#{sysUserId} and to_user_id=#{anotherUserId})
+                or (from_user_id=#{anotherUserId} and to_user_id=#{sysUserId}))
+                order by id desc limit 1)
+              ) as create_date,
+              num + 1 as num
+            from cte where num &lt; #{maxPageSize} and ABS(timestampdiff(second, cte.create_date, (	select create_date
+                                                                        from sys_tourist_msg
+                                                                        where id = (
+                                                                              select id
+                                                                              from sys_tourist_msg
+                                                                              where id &lt; cte.id
+                                                                              and (del_user_id is null or del_user_id &lt;&gt; #{sysUserId})
+                                                                              and ((from_user_id=#{sysUserId} and to_user_id=#{anotherUserId})
+                                                                              or (from_user_id=#{anotherUserId} and to_user_id=#{sysUserId}))
+                                                                              order by id desc
+                                                                              limit 1
+                                                                                    )
+                                                                      )
+                                            )
+                              ) &lt;= #{maxSecondIntervalOfTwoMsg}
+        )
+    )
+    select
+        stm.id,
+        stm.from_user_id,
+        if(stm.is_recall = 0, stm.to_user_id, null) as to_user_id,
+        if(stm.is_recall = 0, stm.msg, null) as msg,
+        if(stm.is_recall = 0, stm.msg_type, null) as msg_type,
+        stm.is_recall,
+        stm.create_date
+    from cte
+    join sys_tourist_msg stm
+    on cte.id = stm.id
+    order by stm.id
+  </select>
+
+    <!--撤回消息-->
+  <update id="recallMsg">
+    update sys_tourist_msg
+    set is_recall = 1
+    where id = #{id}
+  </update>
+
+  <!--删除聊天记录-->
+  <update id="removeById">
+      <foreach collection="msgList" item="msg" index="index" open="" close="" separator=";">
+          delete from sys_tourist_msg
+          where id = #{msg.id} and del_user_id is not null;
+          update sys_tourist_msg
+          set del_user_id = #{sysUserId}
+          where id = #{msg.id} and del_user_id is null
+      </foreach>
+  </update>
+
+  <!--查找这些消息是否被双方都删除了-->
+  <select id="isBothDeleteList" resultType="java.lang.Boolean">
+    select if(del_user_id is null, false, true)
+    from sys_tourist_msg
+    where id in
+    <foreach collection="list" item="sysUserMsg" open="(" close=")" separator=",">
+      #{sysUserMsg.id}
+    </foreach>
+  </select>
+</mapper>

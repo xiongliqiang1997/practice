@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.UserShoppingCartMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.UserShoppingCart">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+
+  <resultMap id="BaseResultProductMap" type="com.qiang.practice.model.vo.UserShoppingCartProductVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_id" jdbcType="BIGINT" property="productId" />
+    <result column="product_type" jdbcType="BIGINT" property="productType" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="first_product_img_path" jdbcType="VARCHAR" property="firstProductImgPath" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="product_stock" jdbcType="INTEGER" property="productStock" />
+    <result column="total_product_price" jdbcType="DECIMAL" property="totalProductPrice" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, sys_user, product_id, num, create_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_shopping_cart
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_shopping_cart
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.UserShoppingCart">
+    insert into user_shopping_cart (id, sys_user, product_id, 
+      num, create_date)
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{productId,jdbcType=BIGINT}, 
+      #{num,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.UserShoppingCart">
+    insert into user_shopping_cart
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.UserShoppingCart">
+    update user_shopping_cart
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.UserShoppingCart">
+    update user_shopping_cart
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      product_id = #{productId,jdbcType=BIGINT},
+      num = #{num,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--获取用户的购物车列表（包含条件筛选）-->
+  <select id="getListBySysUserAndCondition" resultMap="BaseResultProductMap">
+    select
+      p.id,
+      p.id as product_id,
+      p.product_type,
+      pt.type_name,
+      p.product_name,
+      p.product_price,
+      usc.num,
+      p.product_price*usc.num as total_product_price,
+      ( select img_path
+        from product_img
+        where product_id=p.id and is_valid=1
+        order by orderby asc limit 0,1) as first_product_img_path
+    from user_shopping_cart usc
+    join product p
+    on usc.product_id=p.id
+    join product_type pt
+    on p.product_type=pt.id
+    where usc.sys_user=#{sysUser}
+    <if test="paramMap.productName != null and paramMap.productName != ''">
+      and p.product_name like "%"{paramMap.productName}"%"
+    </if>
+    order by usc.create_date desc
+  </select>
+
+  <!--根据用户id和商品id获取购物车记录-->
+  <select id="getBySysUserAndProductId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from user_shopping_cart
+    where sys_user=#{sysUserId}
+    and product_id=#{productId}
+  </select>
+
+  <!--获取用户的购物车列表（不包含条件筛选）-->
+  <select id="getListBySysUser" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"></include>
+    from user_shopping_cart
+    where sys_user=#{sysUser}
+  </select>
+
+  <!--批量修改购物车信息-->
+  <update id="batchUpdate" parameterType="java.util.List">
+    <foreach collection="updateUserShoppingCartList" item="userShoppingCart" open="" close="" separator=";">
+      update user_shopping_cart
+      set num=#{userShoppingCart.num}
+      where id=#{userShoppingCart.id}
+    </foreach>
+  </update>
+
+  <!--批量添加购物车-->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into user_shopping_cart
+    (id, sys_user, product_id, num, create_date)
+    values
+    <foreach collection="userShoppingCartList" item="item" index="index" separator=",">
+      (#{item.id}, #{sysUser}, #{item.productId}, #{item.num}, now())
+    </foreach>
+  </insert>
+
+  <!--根据商品id修改购物车中改商品的数量-->
+  <update id="updateProductNum">
+    update user_shopping_cart
+    set num=#{num}
+    where product_id=#{productId}
+    and sys_user=#{sysUser}
+  </update>
+
+  <!--根据id数组删除购物车中的商品-->
+  <delete id="removeByProductIdList">
+    delete from user_shopping_cart
+    where find_in_set(product_id, #{productIdListStr})>0 and sys_user=#{sysUser}
+  </delete>
+</mapper>

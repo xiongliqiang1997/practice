@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.SysLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sys_user" jdbcType="BIGINT" property="sysUser" />
+    <result column="log_type" jdbcType="VARCHAR" property="logType" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="log_result" jdbcType="TINYINT" property="logResult" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.qiang.practice.model.SysLog">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sys_user, log_type, log_result, create_date
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select
+    sl.id,
+    sl.sys_user,
+    sl.log_type,
+    sl.log_result,
+    sl.create_date,
+    u.user_name,
+    sl.content
+    from sys_log sl
+    join sys_user u
+    on sl.sys_user = u.id
+    where sl.id = #{id,jdbcType=BIGINT}
+  </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.SysLog">
+    insert into sys_log (id, sys_user, log_type, 
+      log_result, create_date, content
+      )
+    values (#{id,jdbcType=BIGINT}, #{sysUser,jdbcType=BIGINT}, #{logType,jdbcType=VARCHAR}, 
+      #{logResult,jdbcType=TINYINT}, #{createDate,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.SysLog">
+    insert into sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sysUser != null">
+        sys_user,
+      </if>
+      <if test="logType != null">
+        log_type,
+      </if>
+      <if test="logResult != null">
+        log_result,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="sysUser != null">
+        #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="logType != null">
+        #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="logResult != null">
+        #{logResult,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.SysLog">
+    update sys_log
+    <set>
+      <if test="sysUser != null">
+        sys_user = #{sysUser,jdbcType=BIGINT},
+      </if>
+      <if test="logType != null">
+        log_type = #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="logResult != null">
+        log_result = #{logResult,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.qiang.practice.model.SysLog">
+    update sys_log
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      log_type = #{logType,jdbcType=VARCHAR},
+      log_result = #{logResult,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.SysLog">
+    update sys_log
+    set sys_user = #{sysUser,jdbcType=BIGINT},
+      log_type = #{logType,jdbcType=VARCHAR},
+      log_result = #{logResult,jdbcType=TINYINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件查询对应的日志列表-->
+  <select id="getListByCondition" resultType="java.util.Map">
+    select
+        l.id as 'id',
+        l.log_type as 'logType',
+        l.log_result as 'logResult',
+        l.content as 'content',
+        substring(l.create_date, 1, 19) as 'createDate',
+        u.user_name as 'userName'
+    from sys_log l
+    join sys_user u
+    on l.sys_user=u.id
+    <where>
+      <if test="createDate != null and createDate != ''">
+        and DATEDIFF(l.create_date,#{createDate})=0
+      </if>
+      <if test="userName != null and userName != ''">
+        and u.user_name like "%"#{userName}"%"
+      </if>
+      <if test="logType != null and logType != ''">
+        and l.log_type like "%"#{logType}"%"
+      </if>
+      <if test="logResult != null and logResult != ''">
+        and l.log_result = #{logResult}
+      </if>
+      <if test="content != null and content != ''">
+        and l.content like "%"#{content}"%"
+      </if>
+    </where>
+    order by l.create_date desc
+  </select>
+
+  <!--获取所有日志列表-->
+  <select id="getList" resultType="java.util.Map">
+    select
+        l.id as 'id',
+        l.log_type as 'logType',
+        l.log_result as 'logResult',
+        ifnull(l.content, '') as 'content',
+        substring(l.create_date, 1, 19) as 'createDate',
+        u.user_name as 'userName'
+    from sys_log l
+    join sys_user u
+    on l.sys_user=u.id
+    order by l.create_date desc
+  </select>
+</mapper>

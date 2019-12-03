@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qiang.practice.mapper.ProductTypeMapper">
+  <resultMap id="BaseResultMap" type="com.qiang.practice.model.ProductType">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
+    <result column="type_name" jdbcType="VARCHAR" property="typeName" />
+    <result column="orderby" jdbcType="INTEGER" property="orderby" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+    <result column="invalid_date" jdbcType="TIMESTAMP" property="invalidDate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, p_id, type_name, orderby, create_date, update_date, is_valid, invalid_date
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.qiang.practice.model.ProductType">
+    insert into product_type (id, p_id, type_name, 
+      orderby, create_date, update_date, 
+      is_valid, invalid_date)
+    values (#{id,jdbcType=BIGINT}, #{pId,jdbcType=BIGINT}, #{typeName,jdbcType=VARCHAR}, 
+      #{orderby,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+      1, #{invalidDate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.qiang.practice.model.ProductType">
+    insert into product_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="pId != null">
+        p_id,
+      </if>
+      <if test="typeName != null">
+        type_name,
+      </if>
+      <if test="orderby != null">
+        orderby,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="invalidDate != null">
+        invalid_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="pId != null">
+        #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="typeName != null">
+        #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.qiang.practice.model.ProductType">
+    update product_type
+    <set>
+      <if test="pId != null">
+        p_id = #{pId,jdbcType=BIGINT},
+      </if>
+      <if test="typeName != null">
+        type_name = #{typeName,jdbcType=VARCHAR},
+      </if>
+      <if test="orderby != null">
+        orderby = #{orderby,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=TINYINT},
+      </if>
+      <if test="invalidDate != null">
+        invalid_date = #{invalidDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.qiang.practice.model.ProductType">
+    update product_type
+    set p_id = #{pId,jdbcType=BIGINT},
+      type_name = #{typeName,jdbcType=VARCHAR},
+      orderby = #{orderby,jdbcType=INTEGER},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      is_valid = #{isValid,jdbcType=TINYINT},
+      invalid_date = #{invalidDate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!--根据条件查询-->
+  <select id="getByCondition" resultType="java.util.Map">
+    select
+      pt1.id,
+      pt1.p_id as pId,
+      pt1.type_name as typeName,
+      ifnull(pt2.type_name, '无') as pName
+    from product_type pt1
+    left join product_type pt2
+    on pt1.p_id=pt2.id
+    where pt1.is_valid=1
+    <if test="id != null and id != ''">
+      and pt1.id in (
+            select data.id from(
+                select
+                    @ids as _ids,
+                    ( select @ids := group_concat(id)
+                      from product_type
+                      where find_in_set(p_id, @ids)
+                    ) as cids,
+                    @l := @l+1 as level
+                from product_type,
+                (select @ids :=#{id}, @l := 0 ) b
+                where @ids is not null
+            ) id
+            join
+            product_type data
+            on find_in_set(data.id, id._ids) and data.is_valid=1
+            order by level, id
+      )
+    </if>
+    <if test="typeName != null and typeName != ''">
+      and pt1.type_name like "%"#{typeName}"%"
+    </if>
+    <if test="pName != null and pName != ''">
+        <choose>
+            <when test='pName == "无"'>
+              and pt2.type_name is null
+            </when>
+            <otherwise>
+              and pt2.type_name like "%"#{pName}"%"
+            </otherwise>
+        </choose>
+    </if>
+    order by pt1.orderby asc
+  </select>
+
+  <!--根据上级分类id获取节点-->
+  <select id="getByPId" resultMap="BaseResultMap">
+    select
+        id, type_name
+    from product_type
+    where p_id=#{pId}
+    and is_valid=1
+    order by orderby asc
+  </select>
+
+  <!--获取最大排序号-->
+  <select id="getMaxOrderby" resultType="java.lang.Integer">
+    select max(orderby)
+    from product_type
+    where is_valid=1
+  </select>
+
+  <!--获取其父级分类下该分类名称的数量-->
+  <select id="getTypeNameCount" resultType="java.lang.Integer">
+    select count(id)
+    from product_type
+    where is_valid = 1
+    and type_name=#{typeName}
+    and p_id=#{pId}
+    <if test="id != null and id != ''">
+      and id &lt;&gt; #{id}
+    </if>
+  </select>
+
+  <!--批量删除商品分类,将每个分类及其子分类的有效字段置为0-->
+  <update id="updateIsValidToZeroById">
+    update product_type
+    set is_valid = 0, invalid_date = now()
+    where id in (
+        select temp.finalId from (
+            select data.id as finalId from(
+                select
+                    @ids as _ids,
+                    ( select @ids := group_concat(id)
+                      from product_type
+                      where find_in_set(p_id, @ids)
+                    ) as cids,
+                    @l := @l+1 as level
+                from product_type,
+                (select @ids := #{id}, @l := 0 ) b
+                where @ids is not null
+            ) id
+            join
+            product_type data
+            on find_in_set(data.id, id._ids) and data.is_valid=1
+            order by level, id
+        ) temp
+    )
+  </update>
+
+  <!--根据id查单个商品分类的详细信息-->
+  <select id="getById" resultType="java.util.Map">
+    select
+      pt1.id,
+      pt1.p_id as pId,
+      pt1.type_name as typeName,
+      ifnull(pt2.type_name, '无') as pName
+    from product_type pt1
+    left join product_type pt2
+    on pt1.p_id=pt2.id
+    where pt1.is_valid=1
+    and pt1.id = #{id}
+  </select>
+
+  <!--根据id查询其下第一层子分类-->
+  <select id="getFirstSonById" resultType="java.util.Map">
+    select
+        id, type_name as typeName, orderby
+    from product_type
+    where is_valid=1
+    and p_id = if(isnull(#{id}), 0, #{id})
+    order by orderby asc
+  </select>
+
+  <!--根据id修改orderby字段-->
+  <update id="sort">
+    update product_type
+    set orderby=#{orderby}
+    where id=#{id}
+  </update>
+</mapper>
