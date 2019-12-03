@@ -1,0 +1,19 @@
+.mvn
+mvnw
+mvnw.cmd
+
+HELP.md
+
+target/
+!**/src/main/**
+!**/src/test/**
+
+**/*.pfx
+**/*.keystore
+**/*.p12
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
