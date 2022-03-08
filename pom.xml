@@ -31,7 +31,7 @@
         <poi.version>4.0.1</poi.version>
         <poi.ooxml.schemas.version>4.0.1</poi.ooxml.schemas.version>
         <poi.ooxml.version>4.0.1</poi.ooxml.version>
-        <poi.scratchpad.version>4.0.1</poi.scratchpad.version>
+        <poi.scratchpad.version>5.2.1</poi.scratchpad.version>
         <org.apache.poi.xwpf.converter.xhtml.version>1.0.4</org.apache.poi.xwpf.converter.xhtml.version>
         <org.apache.poi.xwpf.converter.core.version>1.0.4</org.apache.poi.xwpf.converter.core.version>
         <ooxml.schemas.version>1.1</ooxml.schemas.version>
