@@ -28,7 +28,7 @@
         <spring.session.data.redis.version>2.0.4.RELEASE</spring.session.data.redis.version>
         <jackson.mapper.asl.version>1.9.13</jackson.mapper.asl.version>
         <json.lib.classifier>jdk15</json.lib.classifier>
-        <poi.version>4.0.1</poi.version>
+        <poi.version>4.1.1</poi.version>
         <poi.ooxml.schemas.version>4.0.1</poi.ooxml.schemas.version>
         <poi.ooxml.version>4.0.1</poi.ooxml.version>
         <poi.scratchpad.version>4.0.1</poi.scratchpad.version>
